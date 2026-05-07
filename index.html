@@ -123,6 +123,21 @@
             .vocab-table th, .vocab-table td { padding: 0.3rem 0.4rem; }
             .vocab-table td.cn { font-size: 1rem; }
         }
+        .story-quiz-option {
+    display: inline-block;
+    padding: 0.4rem 0.8rem;
+    margin: 0.2rem;
+    border: 2px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: #fff;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all var(--transition);
+}
+.story-quiz-option:hover { border-color: var(--accent); background: #fef5f7; }
+.story-quiz-option.correct { border-color: var(--success) !important; background: #e0f0e0 !important; }
+.story-quiz-option.wrong { border-color: #e0a0a0 !important; background: #fff0f0 !important; }
+.story-quiz-option:disabled { pointer-events: none; opacity: 0.7; }
     </style>
 <!-- Para iPhone y iPad -->
 <link rel="apple-touch-icon" href="Icono.png">
@@ -196,7 +211,10 @@ const pinyinMap = {
     // Nombres propios (frecuentes en diálogos)
     '安娜':'Ānnà','路易斯':'Lùyìsī','王明':'Wáng Míng','玛丽':'Mǎlì','张':'Zhāng','李':'Lǐ','赵':'Zhào','王':'Wáng','路':'Lù','易':'Yì','斯':'Sī','安':'Ān','娜':'Nà','玛':'Mǎ','丽':'Lì',
     // Caracteres individuales (faltantes y HSK1)
-    '便':'pián','宜':'yi','商':'shāng','店':'diàn','饭':'fàn','店':'diàn','医':'yī','院':'yuàn','机':'jī','场':'chǎng','车':'chē','站':'zhàn','视':'shì','脑':'nǎo','手':'shǒu','衣':'yī','服':'fu','东':'dōng','西':'xī','西':'xī','瓜':'guā','苹':'píng','果':'guǒ','蛋':'dàn','糕':'gāo','牛':'niú','奶':'nǎi','天':'tiān','气':'qì','冷':'lěng','热':'rè','雨':'yǔ','漂':'piào','亮':'liàng','高':'gāo','兴':'xìng','谢':'xiè','对':'duì','起':'qǐ','没':'méi','关':'guān','系':'xì','再':'zài','见':'jiàn','喂':'wèi','感':'gǎn','冒':'mào','住':'zhù','作':'zuò','后':'hòu','前':'qián','面':'miàn','些':'xiē','哪':'nǎ','会':'huì','张':'zhāng','李':'lǐ','赵':'zhào','生':'shēng','先':'xiān','然':'rán','后':'hòu','对':'duì','午':'wǔ','水':'shuǐ','火':'huǒ','山':'shān','石':'shí','田':'tián','土':'tǔ','花':'huā','草':'cǎo','木':'mù','金':'jīn','什':'shén','么':'me','吗':'ma','呢':'ne','谁':'shéi','哪':'nǎ','会':'huì','很':'hěn','也':'yě','没':'méi','想':'xiǎng','安':'ān','娜':'nà','路':'lù','易':'yì','斯':'sī','王':'wáng','玛':'mǎ','丽':'lì','认':'rèn','识':'shi','高':'gāo','兴':'xìng','工':'gōng','程':'chéng','师':'shī','汉':'hàn','语':'yǔ','英':'yīng','文':'wén','美':'měi','国':'guó','名':'míng','字':'zì','爸':'bà','妈':'mā','弟':'dì','朋':'péng','友':'yǒu','同':'tóng','学':'xué','说':'shuō','去':'qù','回':'huí','今':'jīn','天':'tiān','昨':'zuó','一':'yī','号':'hào','二':'èr','三':'sān','四':'sì','五':'wǔ','个':'gè','月':'yuè','日':'rì','明':'míng','六':'liù','七':'qī','八':'bā','九':'jiǔ','十':'shí','书':'shū','电':'diàn','影':'yǐng','看':'kàn','运':'yùn','动':'dòng','做':'zuò','星':'xīng','期':'qī','家':'jiā','校':'xiào','上':'shàng','午':'wǔ','下':'xià','现':'xiàn','在':'zài','点':'diǎn','分':'fēn','零':'líng','年':'nián','吃':'chī','饭':'fàn','来':'lái','喝':'hē','咖':'kā','啡':'fēi','茶':'chá','杯':'bēi','钱':'qián','块':'kuài','要':'yào','中':'zhōng','老':'lǎo','儿':'ér','斤':'jin','子':'zi','这':'zhè','桌':'zhuō','椅':'yǐ','只':'zhī','那':'nà','妻':'qī','女':'nǚ','里':'lǐ','怎':'zěn','里':'lǐ','喜':'xǐ','欢':'huān','出':'chū','租':'zū','飞':'fēi','种':'zhǒng','睡':'shuì','觉':'jiào','样':'yàng','酒':'jiǔ','样':'yàng', '远':'yuǎn','发':'fā','票':'piào','空':'kōng','调':'diào','房':'fáng', '姐':'jiě','给':'gěi','单':'dān','碗':'wǎn','盘':'pán','碟':'dié','鱼':'yú','米':'mǐ','考':'kǎo','试':'shì','习':'xí','每':'měi','难':'nàn','时':'shí','打':'dǎ','话':'huà','候':'hòu','音':'yīn','乐':'yuè','用':'yòng', 
+    '便':'pián','宜':'yi','商':'shāng','店':'diàn','饭':'fàn','店':'diàn','医':'yī','院':'yuàn','机':'jī','场':'chǎng','车':'chē','站':'zhàn','视':'shì','脑':'nǎo','手':'shǒu','衣':'yī','服':'fu','东':'dōng','西':'xī','西':'xī','瓜':'guā','苹':'píng','果':'guǒ','蛋':'dàn','糕':'gāo','牛':'niú','奶':'nǎi','天':'tiān','气':'qì','冷':'lěng','热':'rè','雨':'yǔ','漂':'piào','亮':'liàng','高':'gāo','兴':'xìng','谢':'xiè','对':'duì','起':'qǐ','没':'méi','关':'guān','系':'xì','再':'zài','见':'jiàn','喂':'wèi','感':'gǎn','冒':'mào','住':'zhù','作':'zuò','后':'hòu','前':'qián','面':'miàn','些':'xiē','哪':'nǎ','会':'huì','张':'zhāng','李':'lǐ','赵':'zhào','生':'shēng','先':'xiān','然':'rán','后':'hòu','对':'duì','午':'wǔ','水':'shuǐ','火':'huǒ','山':'shān','石':'shí','田':'tián','土':'tǔ','花':'huā','草':'cǎo','木':'mù','金':'jīn','什':'shén','么':'me','吗':'ma','呢':'ne','谁':'shéi','哪':'nǎ','会':'huì','很':'hěn','也':'yě','没':'méi','想':'xiǎng','安':'ān','娜':'nà','路':'lù','易':'yì','斯':'sī','王':'wáng','玛':'mǎ','丽':'lì','认':'rèn','识':'shi','高':'gāo','兴':'xìng','工':'gōng','程':'chéng','师':'shī','汉':'hàn','语':'yǔ','英':'yīng','文':'wén','美':'měi','国':'guó','名':'míng','字':'zì','爸':'bà','妈':'mā','弟':'dì','朋':'péng','友':'yǒu','同':'tóng','学':'xué','说':'shuō','去':'qù','回':'huí','今':'jīn','天':'tiān','昨':'zuó','一':'yī','号':'hào','二':'èr','三':'sān','四':'sì','五':'wǔ','个':'gè','月':'yuè','日':'rì','明':'míng','六':'liù','七':'qī','八':'bā','九':'jiǔ','十':'shí','书':'shū','电':'diàn','影':'yǐng','看':'kàn','运':'yùn','动':'dòng','做':'zuò','星':'xīng','期':'qī','家':'jiā','校':'xiào','上':'shàng','午':'wǔ','下':'xià','现':'xiàn','在':'zài','点':'diǎn','分':'fēn','零':'líng','年':'nián','吃':'chī','饭':'fàn','来':'lái','喝':'hē','咖':'kā','啡':'fēi','茶':'chá','杯':'bēi','钱':'qián','块':'kuài','要':'yào','中':'zhōng','老':'lǎo','儿':'ér','斤':'jin','子':'zi','这':'zhè','桌':'zhuō','椅':'yǐ','只':'zhī','那':'nà','妻':'qī','女':'nǚ','里':'lǐ','怎':'zěn','里':'lǐ','喜':'xǐ','欢':'huān','出':'chū','租':'zū','飞':'fēi','种':'zhǒng','睡':'shuì','觉':'jiào','样':'yàng','酒':'jiǔ','样':'yàng', '远':'yuǎn','发':'fā','票':'piào','空':'kōng','调':'diào','房':'fáng', '姐':'jiě','给':'gěi','单':'dān','碗':'wǎn','盘':'pán','碟':'dié','鱼':'yú','米':'mǐ','考':'kǎo','试':'shì','习':'xí','每':'měi','难':'nàn','时':'shí','打':'dǎ','话':'huà','候':'hòu','音':'yīn','乐':'yuè','用':'yòng',
+        '有':'yǒu','一':'yī','个':'gè','女':'nǚ','孩':'hái','天':'tiān','看':'kàn','见':'jiàn','男':'nán',
+    '什':'shén','么':'me','名':'míng','字':'zì','认':'rèn','识':'shi','高':'gāo','兴':'xìng',
+    '笑':'xiào','然':'rán','后':'hòu','起':'qǐ','走':'zǒu', 
 };
 function getSpacedPinyin(cn, fallbackPinyin) {
     // Si es un solo carácter, devuelve el pinyin original
@@ -1313,6 +1331,109 @@ lessonsData['1-24'] = (() => {
     ];
     return { vocab, grammar, scenario: dialogue, phrases, exercises: generate30Exercises(vocab, phrases) };
 })();
+// ========== HISTORIAS PARA CADA LECCIÓN ==========
+const storiesData = {
+  'story-1-1': {
+    id: 'story-1-1',
+    lesson: '1-1',
+    title: 'Ana y Luis (安娜和路易斯)',
+    level: 1,
+    content: [
+      { type: 'text', cn: '有一个女孩，她叫安娜。', pinyin: 'Yǒu yī ge nǚhái, tā jiào Ānnà.', es: 'Hay una niña, se llama Ana.' },
+      { type: 'text', cn: '安娜是学生。她很好。', pinyin: 'Ānnà shì xuéshēng. Tā hěn hǎo.', es: 'Ana es estudiante. Ella es muy buena.' },
+      { type: 'text', cn: '有一天，安娜看见一个男孩。', pinyin: 'Yǒu yī tiān, Ānnà kànjiàn yī ge nánhái.', es: 'Un día, Ana ve a un niño.' },
+      { type: 'text', cn: '男孩叫路易斯。', pinyin: 'Nánhái jiào Lùyìsī.', es: 'El niño se llama Luis.' },
+      { type: 'text', cn: '路易斯是工程师。他也很好的。', pinyin: 'Lùyìsī shì gōngchéngshī. Tā yě hěn hǎo.', es: 'Luis es ingeniero. Él también es muy bueno.' },
+      { type: 'text', cn: '安娜说：“你好！我叫安娜。你叫什么名字？”', pinyin: 'Ānnà shuō: “Nǐ hǎo! Wǒ jiào Ānnà. Nǐ jiào shénme míngzì?”', es: 'Ana dice: “¡Hola! Me llamo Ana. ¿Cómo te llamas?”' },
+      { type: 'text', cn: '路易斯说：“你好！我叫路易斯。我是工程师。”', pinyin: 'Lùyìsī shuō: “Nǐ hǎo! Wǒ jiào Lùyìsī. Wǒ shì gōngchéngshī.”', es: 'Luis dice: “¡Hola! Me llamo Luis. Soy ingeniero.”' },
+      { type: 'text', cn: '安娜说：“我是学生。认识你很高兴！”', pinyin: 'Ānnà shuō: “Wǒ shì xuéshēng. Rènshi nǐ hěn gāoxìng!”', es: 'Ana dice: “Soy estudiante. ¡Encantada de conocerte!”' },
+      { type: 'text', cn: '路易斯说：“我也很高兴！你是我的朋友了。”', pinyin: 'Lùyìsī shuō: “Wǒ yě hěn gāoxìng! Nǐ shì wǒ de péngyǒu le.”', es: 'Luis dice: “¡Yo también encantado! Eres mi amiga ahora.”' },
+      { type: 'text', cn: '安娜笑了。她也说：“你是我的朋友了。”', pinyin: 'Ānnà xiào le. Tā yě shuō: “Nǐ shì wǒ de péngyǒu le.”', es: 'Ana sonríe. Ella también dice: “Eres mi amigo ahora.”' },
+      { type: 'text', cn: '然后他们一起走。', pinyin: 'Ránhòu tāmen yīqǐ zǒu.', es: 'Luego caminan juntos.' },
+      { type: 'text', cn: '安娜和路易斯是好朋友。他们都很高兴。', pinyin: 'Ānnà hé Lùyìsī shì hǎo péngyǒu. Tāmen dōu hěn gāoxìng.', es: 'Ana y Luis son buenos amigos. Ambos están muy contentos.' }
+    ],
+    vocabHighlight: ['有', '女孩', '安娜', '学生', '看见', '男孩', '路易斯', '工程师', '叫', '名字', '认识', '高兴', '朋友', '笑', '一起', '走', '都']
+  },
+  'story-1-2': {
+    id: 'story-1-2',
+    lesson: '1-2',
+    title: 'En la escuela (在学校)',
+    level: 2,
+    content: [
+      { type: 'text', cn: '你好！你是老师吗？', pinyin: 'Nǐ hǎo! Nǐ shì lǎoshī ma?', es: '¡Hola! ¿Eres profesor?' },
+      { type: 'text', cn: '我不是老师，我是学生。', pinyin: 'Wǒ bù shì lǎoshī, wǒ shì xuéshēng.', es: 'No soy profesor, soy estudiante.' },
+      { type: 'text', cn: '他是老师吗？', pinyin: 'Tā shì lǎoshī ma?', es: '¿Él es profesor?' },
+      { type: 'text', cn: '是，他是老师。', pinyin: 'Shì, tā shì lǎoshī.', es: 'Sí, él es profesor.' },
+      { type: 'text', cn: '她呢？', pinyin: 'Tā ne?', es: '¿Y ella?' },
+      { type: 'text', cn: '她不是老师，她是学生。', pinyin: 'Tā bù shì lǎoshī, tā shì xuéshēng.', es: 'Ella no es profesora, es estudiante.' }
+    ],
+    vocabHighlight: ['他', '她', '老师', '不']
+  },
+  'story-1-3': {
+    id: 'story-1-3',
+    lesson: '1-3',
+    title: '¿De dónde eres? (你是哪国人？)',
+    level: 3,
+    content: [
+      { type: 'text', cn: '你叫什么名字？', pinyin: 'Nǐ jiào shénme míngzì?', es: '¿Cómo te llamas?' },
+      { type: 'text', cn: '我叫王明。我是中国人。', pinyin: 'Wǒ jiào Wáng Míng. Wǒ shì Zhōngguó rén.', es: 'Me llamo Wang Ming. Soy chino.' },
+      { type: 'text', cn: '你是哪国人？', pinyin: 'Nǐ shì nǎ guó rén?', es: '¿De qué país eres?' },
+      { type: 'text', cn: '我是美国人。', pinyin: 'Wǒ shì Měiguó rén.', es: 'Soy estadounidense.' },
+      { type: 'text', cn: '他呢？', pinyin: 'Tā ne?', es: '¿Y él?' },
+      { type: 'text', cn: '他不是中国人，也不是美国人。', pinyin: 'Tā bù shì Zhōngguó rén, yě bù shì Měiguó rén.', es: 'Él no es chino ni estadounidense.' }
+    ],
+    vocabHighlight: ['人', '中国', '美国', '名字']
+  },
+  'story-1-4': {
+    id: 'story-1-4',
+    lesson: '1-4',
+    title: 'Mi familia (我的家人)',
+    level: 4,
+    content: [
+      { type: 'text', cn: '这是你的爸爸吗？', pinyin: 'Zhè shì nǐ de bàba ma?', es: '¿Este es tu papá?' },
+      { type: 'text', cn: '是，他是我的爸爸。', pinyin: 'Shì, tā shì wǒ de bàba.', es: 'Sí, él es mi papá.' },
+      { type: 'text', cn: '你的妈妈呢？', pinyin: 'Nǐ de māma ne?', es: '¿Y tu mamá?' },
+      { type: 'text', cn: '我的妈妈是老师。', pinyin: 'Wǒ de māma shì lǎoshī.', es: 'Mi mamá es profesora.' },
+      { type: 'text', cn: '你有弟弟吗？', pinyin: 'Nǐ yǒu dìdi ma?', es: '¿Tienes hermano menor?' },
+      { type: 'text', cn: '有，我有一个弟弟。他是学生。', pinyin: 'Yǒu, wǒ yǒu yī ge dìdi. Tā shì xuéshēng.', es: 'Sí, tengo un hermano menor. Es estudiante.' },
+      { type: 'text', cn: '你的朋友呢？', pinyin: 'Nǐ de péngyǒu ne?', es: '¿Y tu amigo?' },
+      { type: 'text', cn: '他是我同学。', pinyin: 'Tā shì wǒ tóngxué.', es: 'Él es mi compañero de clase.' }
+    ],
+    vocabHighlight: ['爸爸', '妈妈', '弟弟', '我们', '朋友', '同学']
+  },
+  'story-1-5': {
+    id: 'story-1-5',
+    lesson: '1-5',
+    title: 'Idiomas (语言)',
+    level: 5,
+    content: [
+      { type: 'text', cn: '你会说汉语吗？', pinyin: 'Nǐ huì shuō Hànyǔ ma?', es: '¿Sabes hablar chino?' },
+      { type: 'text', cn: '会，我会说汉语。', pinyin: 'Huì, wǒ huì shuō Hànyǔ.', es: 'Sí, sé hablar chino.' },
+      { type: 'text', cn: '你的朋友会说汉语吗？', pinyin: 'Nǐ de péngyǒu huì shuō Hànyǔ ma?', es: '¿Tu amigo sabe hablar chino?' },
+      { type: 'text', cn: '他不会说汉语，他会说英文。', pinyin: 'Tā bù huì shuō Hànyǔ, tā huì shuō Yīngwén.', es: 'No sabe hablar chino, sabe hablar inglés.' },
+      { type: 'text', cn: '你是哪国人？', pinyin: 'Nǐ shì nǎ guó rén?', es: '¿De qué país eres?' },
+      { type: 'text', cn: '我是中国人。', pinyin: 'Wǒ shì Zhōngguó rén.', es: 'Soy chino.' }
+    ],
+    vocabHighlight: ['说', '汉语', '英文']
+  },
+  'story-1-6': {
+    id: 'story-1-6',
+    lesson: '1-6',
+    title: 'Hoy y ayer (今天和昨天)',
+    level: 6,
+    content: [
+      { type: 'text', cn: '今天几号？', pinyin: 'Jīntiān jǐ hào?', es: '¿Qué día es hoy?' },
+      { type: 'text', cn: '今天五号。', pinyin: 'Jīntiān wǔ hào.', es: 'Hoy es día 5.' },
+      { type: 'text', cn: '昨天呢？', pinyin: 'Zuótiān ne?', es: '¿Y ayer?' },
+      { type: 'text', cn: '昨天四号。', pinyin: 'Zuótiān sì hào.', es: 'Ayer fue día 4.' },
+      { type: 'text', cn: '你去哪儿？', pinyin: 'Nǐ qù nǎr?', es: '¿Adónde vas?' },
+      { type: 'text', cn: '我去学校。', pinyin: 'Wǒ qù xuéxiào.', es: 'Voy a la escuela.' },
+      { type: 'text', cn: '昨天你回家了吗？', pinyin: 'Zuótiān nǐ huí jiā le ma?', es: '¿Ayer volviste a casa?' },
+      { type: 'text', cn: '是，我昨天回家了。', pinyin: 'Shì, wǒ zuótiān huí jiā le.', es: 'Sí, ayer volví a casa.' }
+    ],
+    vocabHighlight: ['去', '回', '今天', '昨天', '一', '二', '三', '四', '五', '个']
+  }
+};
             // Fin de las lecciones HSK 1
 for (let i = 25; i <= 24; i++) lessonsData['1-' + i] = { vocab: [], grammar: [], scenario: [], phrases: [], exercises: [] };
             const lessonKeys = Object.keys(lessonsData).sort((a,b)=>parseInt(a.split('-')[1])-parseInt(b.split('-')[1]));
@@ -1636,7 +1757,71 @@ for (let i = 25; i <= 24; i++) lessonsData['1-' + i] = { vocab: [], grammar: [],
             };
 
             window.openGamesView = () => { currentView = 'games'; document.getElementById('contentArea').innerHTML = '<h2>🎮 Juegos</h2><p>Próximamente.</p>'; updateTopbar(); closeSidebarOnMobile(); };
-            window.openStoriesView = () => { currentView = 'stories'; document.getElementById('contentArea').innerHTML = '<h2>📖 Historias</h2><p>Próximamente.</p>'; updateTopbar(); closeSidebarOnMobile(); };
+            window.openStoriesView = () => {
+    currentView = 'stories';
+    closeSidebarOnMobile();
+
+    // Agrupar historias por lección
+    const storiesByLesson = {};
+    Object.values(storiesData).forEach(story => {
+        if (!storiesByLesson[story.lesson]) storiesByLesson[story.lesson] = [];
+        storiesByLesson[story.lesson].push(story);
+    });
+
+    let html = `<div class="section"><h2>📖 Historias por lección</h2>`;
+    for (let lesson in storiesByLesson) {
+        html += `<h3>Lección ${lesson}</h3><ul>`;
+        storiesByLesson[lesson].forEach(story => {
+            html += `<li><button class="btn story-btn" onclick="renderStoryView('${story.id}')">${story.title}</button></li>`;
+        });
+        html += `</ul>`;
+    }
+    if (Object.keys(storiesByLesson).length === 0) html += `<p>No hay historias disponibles todavía.</p>`;
+    html += `</div>`;
+    document.getElementById('contentArea').innerHTML = html;
+    updateTopbar();
+};
+window.renderStoryView = (storyId) => {
+    const story = storiesData[storyId];
+    if (!story) return;
+    currentView = 'storyDetail';
+    let html = `<div class="section"><h2>📖 ${story.title}</h2><p><small>Lección ${story.lesson}</small></p>`;
+    story.content.forEach((block, idx) => {
+        if (block.type === 'text') {
+            html += `<div class="dialogue-card" style="border-left-color:var(--accent);"><div><strong>${block.cn}</strong><br><small>${block.pinyin}</small><br>${block.es}</div><button class="btn audio-btn" onclick="window._speak('${block.cn}')">🔊</button></div>`;
+        } else if (block.type === 'question') {
+            html += `<div class="exercise-box"><p><strong>❓ Pregunta:</strong> ${block.text}</p><div>`;
+            block.options.forEach((opt, i) => {
+                html += `<button class="story-quiz-option" data-story="${storyId}" data-question="${idx}" data-correct="${block.correct}" data-opt="${opt}" onclick="checkStoryAnswer(this)">${opt}</button> `;
+            });
+            html += `</div><p id="storyFb${storyId}_${idx}"></p></div>`;
+        }
+    });
+    html += `<button class="btn" style="margin-top:1rem;" onclick="openStoriesView()">← Volver al listado</button></div>`;
+    document.getElementById('contentArea').innerHTML = html;
+    updateTopbar();
+};
+
+window.checkStoryAnswer = (btn) => {
+    const storyId = btn.dataset.story;
+    const qIdx = btn.dataset.question;
+    const correct = btn.dataset.correct;
+    const opt = btn.dataset.opt;
+    const fb = document.getElementById(`storyFb${storyId}_${qIdx}`);
+    const allOpts = btn.parentElement.querySelectorAll('.story-quiz-option');
+    if (btn.disabled) return;
+    allOpts.forEach(b => b.disabled = true);
+    if (opt === correct) {
+        btn.classList.add('correct');
+        fb.textContent = '✓ ¡Correcto!';
+        fb.style.color = '#4a7a4a';
+    } else {
+        btn.classList.add('wrong');
+        fb.textContent = `✗ La respuesta correcta es: ${correct}`;
+        fb.style.color = '#b05050';
+        [...allOpts].find(b => b.dataset.opt === correct)?.classList.add('correct');
+    }
+};
 
             updateSidebar(); navigateTo(0);
         })();

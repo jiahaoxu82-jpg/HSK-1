@@ -1,7 +1,7 @@
 {
   "name": "Curso HSK 1",
   "short_name": "HSK 1",
-  "start_url": "index.html",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#000000",

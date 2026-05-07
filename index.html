@@ -1440,49 +1440,110 @@ const storiesData = {
 };
 // ========== DATOS PARA COMBINACIONES ==========
 const combinationsData = {
-  // Bloque 1: Combinaciones creativas (ejemplo con 学)
-  creative: {
-    title: "🌱 Combinaciones creativas",
-    description: "Aprende cómo un carácter se combina con otros para formar nuevas palabras.",
-    baseChar: "学",
-    basePinyin: "xué",
-    baseMeaning: "estudiar",
-    combinations: [
-      { word: "学生", pinyin: "xuéshēng", meaning: "estudiante", components: "学 + 生" },
-      { word: "学校", pinyin: "xuéxiào", meaning: "escuela", components: "学 + 校" },
-      { word: "学习", pinyin: "xuéxí", meaning: "estudiar (verbo)", components: "学 + 习" },
-      { word: "大学", pinyin: "dàxué", meaning: "universidad", components: "大 + 学" },
-      { word: "科学", pinyin: "kēxué", meaning: "ciencia", components: "科 + 学" }
+  creativeChars: [
+    { char: "学", pinyin: "xué", meaning: "estudiar", detail: "Carácter muy productivo para palabras de estudio." },
+    { char: "好", pinyin: "hǎo", meaning: "bueno", detail: "Aparece en saludos y adjetivos positivos." },
+    { char: "吃", pinyin: "chī", meaning: "comer", detail: "Verbo básico para comer." },
+    { char: "大", pinyin: "dà", meaning: "grande", detail: "Adjetivo de tamaño." },
+    { char: "电", pinyin: "diàn", meaning: "electricidad", detail: "Carácter para objetos electrónicos." }
+  ],
+  combinationsMap: {
+    "学": [
+      { word: "学生", pinyin: "xuéshēng", meaning: "estudiante", components: "学 + 生", detail: "Persona que estudia." },
+      { word: "学校", pinyin: "xuéxiào", meaning: "escuela", components: "学 + 校", detail: "Lugar de enseñanza." },
+      { word: "学习", pinyin: "xuéxí", meaning: "estudiar", components: "学 + 习", detail: "Acción de aprender." },
+      { word: "大学", pinyin: "dàxué", meaning: "universidad", components: "大 + 学", detail: "Educación superior." },
+      { word: "科学", pinyin: "kēxué", meaning: "ciencia", components: "科 + 学", detail: "Conocimiento científico." }
     ],
-    story: {
-      cn: "我有一个朋友，他在大学学习。他是学生，喜欢科学。",
-      pinyin: "Wǒ yǒu yī ge péngyǒu, tā zài dàxué xuéxí. Tā shì xuéshēng, xǐhuān kēxué.",
-      es: "Tengo un amigo. Él estudia en la universidad. Es estudiante y le gusta la ciencia."
-    }
-  },
-  // Bloque 2: Escenario temático (La cocina)
-  thematic: {
-    title: "🍳 La cocina",
-    description: "Vocabulario y frases útiles relacionadas con la cocina.",
-    category: "cocina",
-    items: [
-      { cn: "桌子", pinyin: "zhuōzi", es: "mesa" },
-      { cn: "椅子", pinyin: "yǐzi", es: "silla" },
-      { cn: "冰箱", pinyin: "bīngxiāng", es: "nevera" },
-      { cn: "炉子", pinyin: "lúzi", es: "cocina / hornilla" },
-      { cn: "锅", pinyin: "guō", es: "olla / sartén" },
-      { cn: "碗", pinyin: "wǎn", es: "bol / tazón" },
-      { cn: "筷子", pinyin: "kuàizi", es: "palillos" },
-      { cn: "盘子", pinyin: "pánzi", es: "plato" },
-      { cn: "水", pinyin: "shuǐ", es: "agua" },
-      { cn: "食物", pinyin: "shíwù", es: "comida / alimento" }
+    "好": [
+      { word: "你好", pinyin: "nǐhǎo", meaning: "hola", components: "你 + 好", detail: "Saludo estándar." },
+      { word: "好吃", pinyin: "hǎochī", meaning: "delicioso", components: "好 + 吃", detail: "Comida sabrosa." },
+      { word: "好看", pinyin: "hǎokàn", meaning: "bonito", components: "好 + 看", detail: "Aspecto agradable." },
+      { word: "好人", pinyin: "hǎorén", meaning: "buena persona", components: "好 + 人", detail: "Persona amable." }
     ],
-    phrases: [
-      { cn: "桌子上面有一碗水", pinyin: "Zhuōzi shàngmiàn yǒu yī wǎn shuǐ", es: "Sobre la mesa hay un bol de agua." },
-      { cn: "冰箱里有食物", pinyin: "Bīngxiāng lǐ yǒu shíwù", es: "En la nevera hay comida." },
-      { cn: "我用筷子吃饭", pinyin: "Wǒ yòng kuàizi chī fàn", es: "Uso palillos para comer." },
-      { cn: "锅在炉子上面", pinyin: "Guō zài lúzi shàngmiàn", es: "La olla está sobre la hornilla." }
+    "吃": [
+      { word: "吃饭", pinyin: "chīfàn", meaning: "comer", components: "吃 + 饭", detail: "Ingerir alimentos." },
+      { word: "好吃", pinyin: "hǎochī", meaning: "delicioso", components: "好 + 吃", detail: "Sabroso." },
+      { word: "小吃", pinyin: "xiǎochī", meaning: "aperitivo", components: "小 + 吃", detail: "Comida ligera." }
+    ],
+    "大": [
+      { word: "大学", pinyin: "dàxué", meaning: "universidad", components: "大 + 学", detail: "Universidad." },
+      { word: "大人", pinyin: "dàrén", meaning: "adulto", components: "大 + 人", detail: "Persona mayor." },
+      { word: "大家", pinyin: "dàjiā", meaning: "todos", components: "大 + 家", detail: "Todo el mundo." },
+      { word: "大小", pinyin: "dàxiǎo", meaning: "tamaño", components: "大 + 小", detail: "Dimensión." }
+    ],
+    "电": [
+      { word: "电话", pinyin: "diànhuà", meaning: "teléfono", components: "电 + 话", detail: "Para llamar." },
+      { word: "电脑", pinyin: "diànnǎo", meaning: "ordenador", components: "电 + 脑", detail: "Computadora." },
+      { word: "电视", pinyin: "diànshì", meaning: "televisión", components: "电 + 视", detail: "Ver programas." },
+      { word: "电影", pinyin: "diànyǐng", meaning: "película", components: "电 + 影", detail: "Cine." }
     ]
+  },
+  storiesMap: {
+    "学": { cn: "我有一个朋友，他在大学学习。", pinyin: "Wǒ yǒu yī ge péngyǒu, tā zài dàxué xuéxí.", es: "Tengo un amigo, él estudia en la universidad." },
+    "好": { cn: "你好！这个菜很好吃。", pinyin: "Nǐ hǎo! Zhè ge cài hěn hǎochī.", es: "¡Hola! Este plato está delicioso." },
+    "吃": { cn: "我喜欢吃中国小吃。", pinyin: "Wǒ xǐhuān chī Zhōngguó xiǎochī.", es: "Me gusta comer aperitivos chinos." },
+    "大": { cn: "大家都很高兴。", pinyin: "Dàjiā dōu hěn gāoxìng.", es: "Todos están contentos." },
+    "电": { cn: "我用电脑打电话。", pinyin: "Wǒ yòng diànnǎo dǎ diànhuà.", es: "Uso el ordenador para llamar." }
+  },
+  thematicCategories: [
+    { id: "cocina", name: "🍳 Cocina", icon: "🍳" },
+    { id: "salon", name: "🛋️ Salón", icon: "🛋️" },
+    { id: "dormitorio", name: "🛏️ Dormitorio", icon: "🛏️" }
+  ],
+  thematicData: {
+    cocina: {
+      title: "La cocina",
+      items: [
+        { cn: "桌子", pinyin: "zhuōzi", es: "mesa", detail: "Mueble donde se come." },
+        { cn: "椅子", pinyin: "yǐzi", es: "silla", detail: "Asiento." },
+        { cn: "冰箱", pinyin: "bīngxiāng", es: "nevera", detail: "Electrodoméstico para conservar alimentos." },
+        { cn: "炉子", pinyin: "lúzi", es: "cocina", detail: "Aparato para cocinar." },
+        { cn: "锅", pinyin: "guō", es: "olla", detail: "Recipiente para cocinar." },
+        { cn: "碗", pinyin: "wǎn", es: "bol", detail: "Recipiente hondo." },
+        { cn: "筷子", pinyin: "kuàizi", es: "palillos", detail: "Utensilio para comer." },
+        { cn: "盘子", pinyin: "pánzi", es: "plato", detail: "Superficie plana para servir." },
+        { cn: "水", pinyin: "shuǐ", es: "agua", detail: "Líquido esencial." },
+        { cn: "食物", pinyin: "shíwù", es: "comida", detail: "Alimento." }
+      ],
+      phrases: [
+        { cn: "桌子上面有一碗水", pinyin: "Zhuōzi shàngmiàn yǒu yī wǎn shuǐ", es: "Sobre la mesa hay un bol de agua." },
+        { cn: "冰箱里有食物", pinyin: "Bīngxiāng lǐ yǒu shíwù", es: "En la nevera hay comida." },
+        { cn: "我用筷子吃饭", pinyin: "Wǒ yòng kuàizi chī fàn", es: "Uso palillos para comer." },
+        { cn: "锅在炉子上面", pinyin: "Guō zài lúzi shàngmiàn", es: "La olla está sobre la hornilla." }
+      ]
+    },
+    salon: {
+      title: "El salón",
+      items: [
+        { cn: "沙发", pinyin: "shāfā", es: "sofá", detail: "Asiento mullido." },
+        { cn: "电视", pinyin: "diànshì", es: "televisor", detail: "Aparato para ver programas." },
+        { cn: "桌子", pinyin: "zhuōzi", es: "mesa", detail: "Mesa." },
+        { cn: "椅子", pinyin: "yǐzi", es: "silla", detail: "Silla." },
+        { cn: "灯", pinyin: "dēng", es: "lámpara", detail: "Fuente de luz." },
+        { cn: "窗户", pinyin: "chuānghu", es: "ventana", detail: "Abertura en la pared." }
+      ],
+      phrases: [
+        { cn: "沙发前面有电视", pinyin: "Shāfā qiánmiàn yǒu diànshì", es: "Delante del sofá hay un televisor." },
+        { cn: "桌子上面有一盏灯", pinyin: "Zhuōzi shàngmiàn yǒu yī zhǎn dēng", es: "Sobre la mesa hay una lámpara." },
+        { cn: "窗户是开着的", pinyin: "Chuānghu shì kāi zhe de", es: "La ventana está abierta." }
+      ]
+    },
+    dormitorio: {
+      title: "El dormitorio",
+      items: [
+        { cn: "床", pinyin: "chuáng", es: "cama", detail: "Mueble para dormir." },
+        { cn: "枕头", pinyin: "zhěntou", es: "almohada", detail: "Soporte para la cabeza." },
+        { cn: "被子", pinyin: "bèizi", es: "manta", detail: "Cobertor." },
+        { cn: "衣柜", pinyin: "yīguì", es: "armario", detail: "Mueble para guardar ropa." },
+        { cn: "灯", pinyin: "dēng", es: "lámpara", detail: "Luz." }
+      ],
+      phrases: [
+        { cn: "我睡在床上", pinyin: "Wǒ shuì zài chuáng shàng", es: "Duermo en la cama." },
+        { cn: "枕头很软", pinyin: "Zhěntou hěn ruǎn", es: "La almohada es muy blanda." },
+        { cn: "衣柜里有衣服", pinyin: "Yīguì lǐ yǒu yīfu", es: "Dentro del armario hay ropa." }
+      ]
+    }
   }
 };
             // Fin de las lecciones HSK 1
@@ -1877,6 +1938,7 @@ window.checkStoryAnswer = (btn) => {
     }
 };
 // ========== VISTA DE COMBINACIONES ==========
+// ========== VISTA DE COMBINACIONES CORREGIDA ==========
 window.openCombinationsView = () => {
   currentView = 'combinations';
   renderCombinationsMainView();
@@ -1884,14 +1946,38 @@ window.openCombinationsView = () => {
 };
 
 function renderCombinationsMainView() {
-  const html = `
+  const creativeChars = combinationsData.creativeChars;
+  const categories = combinationsData.thematicCategories;
+  
+  let html = `
     <div class="section">
       <h2>🧩 Combinaciones de palabras</h2>
       <p>Explora cómo los caracteres se unen para formar nuevas palabras y aprende vocabulario temático.</p>
-      <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1.5rem;">
-        <button class="btn accent" onclick="renderCreativeCombinations()">🌱 Combinaciones creativas</button>
-        <button class="btn accent" onclick="renderThematicCombinations()">🍳 Escenario: La cocina</button>
+      
+      <div style="margin-top: 2rem;">
+        <h3>🌱 Combinaciones creativas</h3>
+        <p>Haz clic en un carácter base para ver sus combinaciones y una historia.</p>
+        <div style="display: flex; flex-wrap: wrap; gap: 0.8rem;">
+  `;
+  creativeChars.forEach(c => {
+    html += `<button class="btn accent" onclick="renderCreativeCombinations('${c.char}')">${c.char} (${c.pinyin}) - ${c.meaning}</button>`;
+  });
+  html += `
+        </div>
       </div>
+      
+      <div style="margin-top: 2rem;">
+        <h3>🏠 Escenarios temáticos</h3>
+        <p>Selecciona una estancia para aprender su vocabulario.</p>
+        <div style="display: flex; flex-wrap: wrap; gap: 0.8rem;">
+  `;
+  categories.forEach(cat => {
+    html += `<button class="btn accent" onclick="renderThematicCombinations('${cat.id}')">${cat.icon} ${cat.name}</button>`;
+  });
+  html += `
+        </div>
+      </div>
+      
       <div id="combinationsDetailView" style="margin-top: 2rem;"></div>
     </div>
   `;
@@ -1899,20 +1985,32 @@ function renderCombinationsMainView() {
   updateTopbar();
 }
 
-window.renderCreativeCombinations = () => {
-  const data = combinationsData.creative;
+window.renderCreativeCombinations = (char) => {
+  const charInfo = combinationsData.creativeChars.find(c => c.char === char);
+  const combinations = combinationsData.combinationsMap[char] || [];
+  const story = combinationsData.storiesMap[char];
+  
+  if (!charInfo || combinations.length === 0) {
+    document.getElementById('combinationsDetailView').innerHTML = '<p>No hay datos para este carácter todavía.</p>';
+    return;
+  }
+  
   let html = `
     <div class="section">
-      <h3>${data.title}</h3>
-      <p>${data.description}</p>
-      <div style="background: var(--accent-light); padding: 1rem; border-radius: var(--radius); margin-bottom: 1rem;">
-        <strong>Carácter base:</strong> ${data.baseChar} (${data.basePinyin}) – ${data.baseMeaning}
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h3>${char} (${charInfo.pinyin}) – ${charInfo.meaning}</h3>
+        <button class="btn" onclick="renderCombinationsMainView()">← Volver a combinaciones</button>
       </div>
+      <div class="grammar-card" style="margin-bottom: 1rem;">
+        <p>${charInfo.detail}</p>
+      </div>
+      <h4>📚 Palabras formadas con ${char}</h4>
       <table class="vocab-table">
-        <thead><tr><th>Palabra</th><th>Pinyin</th><th>Significado</th><th>Combinación</th><th>🔊</th></tr></thead>
+        <thead><tr><th>Palabra</th><th>Pinyin</th><th>Significado</th><th>Combinación</th><th>🔊</th><th>ℹ️</th></tr></thead>
         <tbody>
   `;
-  data.combinations.forEach(comb => {
+  combinations.forEach(comb => {
+    const detailHtml = comb.detail || `<strong>${comb.word}</strong> (${comb.pinyin}) – ${comb.meaning}`;
     html += `
       <tr>
         <td class="cn">${comb.word}</td>
@@ -1920,6 +2018,7 @@ window.renderCreativeCombinations = () => {
         <td>${comb.meaning}</td>
         <td>${comb.components}</td>
         <td><button class="btn audio-btn" onclick="window._speak('${comb.word}')">🔊</button></td>
+        <td><button class="info-btn" onclick="showInfoModal('${detailHtml.replace(/'/g, "\\'")}')">ℹ️</button></td>
       </tr>
     `;
   });
@@ -1927,34 +2026,40 @@ window.renderCreativeCombinations = () => {
         </tbody>
       </table>
       <div class="grammar-card" style="margin-top: 1.5rem;">
-        <h3>📖 Mini historia con estas palabras</h3>
-        <div><strong>${data.story.cn}</strong><br><small>${data.story.pinyin}</small><br>${data.story.es}</div>
-        <button class="btn audio-btn" style="margin-top:0.5rem;" onclick="window._speak('${data.story.cn}')">🔊 Escuchar historia</button>
+        <h3>📖 Mini historia</h3>
+        <div><strong>${story.cn}</strong><br><small>${story.pinyin}</small><br>${story.es}</div>
+        <button class="btn audio-btn" style="margin-top:0.5rem;" onclick="window._speak('${story.cn}')">🔊 Escuchar historia</button>
       </div>
-      <button class="btn" style="margin-top: 1rem;" onclick="renderCombinationsMainView()">← Volver</button>
     </div>
   `;
   document.getElementById('combinationsDetailView').innerHTML = html;
   updateTopbar();
 };
 
-window.renderThematicCombinations = () => {
-  const data = combinationsData.thematic;
+window.renderThematicCombinations = (categoryId) => {
+  const category = combinationsData.thematicCategories.find(c => c.id === categoryId);
+  const data = combinationsData.thematicData[categoryId];
+  if (!data) return;
+  
   let html = `
     <div class="section">
-      <h3>${data.title}</h3>
-      <p>${data.description}</p>
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h3>${category.icon} ${data.title}</h3>
+        <button class="btn" onclick="renderCombinationsMainView()">← Volver a combinaciones</button>
+      </div>
       <table class="vocab-table">
-        <thead><tr><th>Carácter</th><th>Pinyin</th><th>Español</th><th>🔊</th></tr></thead>
+        <thead><tr><th>Carácter</th><th>Pinyin</th><th>Español</th><th>🔊</th><th>ℹ️</th></tr></thead>
         <tbody>
   `;
   data.items.forEach(item => {
+    const detailHtml = item.detail || `<strong>${item.cn}</strong> (${item.pinyin}) – ${item.es}`;
     html += `
       <tr>
         <td class="cn">${item.cn}</td>
         <td>${item.pinyin}</td>
         <td>${item.es}</td>
         <td><button class="btn audio-btn" onclick="window._speak('${item.cn}')">🔊</button></td>
+        <td><button class="info-btn" onclick="showInfoModal('${detailHtml.replace(/'/g, "\\'")}')">ℹ️</button></td>
       </tr>
     `;
   });
@@ -1974,7 +2079,6 @@ window.renderThematicCombinations = () => {
   });
   html += `
       </div>
-      <button class="btn" style="margin-top: 1rem;" onclick="renderCombinationsMainView()">← Volver</button>
     </div>
   `;
   document.getElementById('combinationsDetailView').innerHTML = html;

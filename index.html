@@ -161,6 +161,7 @@
         <div class="sidebar-link" onclick="openStarredView()">⭐ Destacados</div>
         <div class="sidebar-link" onclick="openGamesView()">🎮 Juegos</div>
         <div class="sidebar-link" onclick="openStoriesView()">📖 Historias</div>
+        <div class="sidebar-link" onclick="openCombinationsView()">🧩 Combinaciones</div>
         <ul class="sidebar-nav" id="sidebarNav"></ul>
     </aside>
     <div class="main"><div class="topbar" id="topbar"></div><div class="content-area" id="contentArea"></div></div>
@@ -214,7 +215,10 @@ const pinyinMap = {
     '便':'pián','宜':'yi','商':'shāng','店':'diàn','饭':'fàn','店':'diàn','医':'yī','院':'yuàn','机':'jī','场':'chǎng','车':'chē','站':'zhàn','视':'shì','脑':'nǎo','手':'shǒu','衣':'yī','服':'fu','东':'dōng','西':'xī','西':'xī','瓜':'guā','苹':'píng','果':'guǒ','蛋':'dàn','糕':'gāo','牛':'niú','奶':'nǎi','天':'tiān','气':'qì','冷':'lěng','热':'rè','雨':'yǔ','漂':'piào','亮':'liàng','高':'gāo','兴':'xìng','谢':'xiè','对':'duì','起':'qǐ','没':'méi','关':'guān','系':'xì','再':'zài','见':'jiàn','喂':'wèi','感':'gǎn','冒':'mào','住':'zhù','作':'zuò','后':'hòu','前':'qián','面':'miàn','些':'xiē','哪':'nǎ','会':'huì','张':'zhāng','李':'lǐ','赵':'zhào','生':'shēng','先':'xiān','然':'rán','后':'hòu','对':'duì','午':'wǔ','水':'shuǐ','火':'huǒ','山':'shān','石':'shí','田':'tián','土':'tǔ','花':'huā','草':'cǎo','木':'mù','金':'jīn','什':'shén','么':'me','吗':'ma','呢':'ne','谁':'shéi','哪':'nǎ','会':'huì','很':'hěn','也':'yě','没':'méi','想':'xiǎng','安':'ān','娜':'nà','路':'lù','易':'yì','斯':'sī','王':'wáng','玛':'mǎ','丽':'lì','认':'rèn','识':'shi','高':'gāo','兴':'xìng','工':'gōng','程':'chéng','师':'shī','汉':'hàn','语':'yǔ','英':'yīng','文':'wén','美':'měi','国':'guó','名':'míng','字':'zì','爸':'bà','妈':'mā','弟':'dì','朋':'péng','友':'yǒu','同':'tóng','学':'xué','说':'shuō','去':'qù','回':'huí','今':'jīn','天':'tiān','昨':'zuó','一':'yī','号':'hào','二':'èr','三':'sān','四':'sì','五':'wǔ','个':'gè','月':'yuè','日':'rì','明':'míng','六':'liù','七':'qī','八':'bā','九':'jiǔ','十':'shí','书':'shū','电':'diàn','影':'yǐng','看':'kàn','运':'yùn','动':'dòng','做':'zuò','星':'xīng','期':'qī','家':'jiā','校':'xiào','上':'shàng','午':'wǔ','下':'xià','现':'xiàn','在':'zài','点':'diǎn','分':'fēn','零':'líng','年':'nián','吃':'chī','饭':'fàn','来':'lái','喝':'hē','咖':'kā','啡':'fēi','茶':'chá','杯':'bēi','钱':'qián','块':'kuài','要':'yào','中':'zhōng','老':'lǎo','儿':'ér','斤':'jin','子':'zi','这':'zhè','桌':'zhuō','椅':'yǐ','只':'zhī','那':'nà','妻':'qī','女':'nǚ','里':'lǐ','怎':'zěn','里':'lǐ','喜':'xǐ','欢':'huān','出':'chū','租':'zū','飞':'fēi','种':'zhǒng','睡':'shuì','觉':'jiào','样':'yàng','酒':'jiǔ','样':'yàng', '远':'yuǎn','发':'fā','票':'piào','空':'kōng','调':'diào','房':'fáng', '姐':'jiě','给':'gěi','单':'dān','碗':'wǎn','盘':'pán','碟':'dié','鱼':'yú','米':'mǐ','考':'kǎo','试':'shì','习':'xí','每':'měi','难':'nàn','时':'shí','打':'dǎ','话':'huà','候':'hòu','音':'yīn','乐':'yuè','用':'yòng',
         '有':'yǒu','一':'yī','个':'gè','女':'nǚ','孩':'hái','天':'tiān','看':'kàn','见':'jiàn','男':'nán',
     '什':'shén','么':'me','名':'míng','字':'zì','认':'rèn','识':'shi','高':'gāo','兴':'xìng',
-    '笑':'xiào','然':'rán','后':'hòu','起':'qǐ','走':'zǒu', 
+    '笑':'xiào','然':'rán','后':'hòu','起':'qǐ','走':'zǒu',     
+    // Palabras para combinaciones (bloque creativo y temático)
+    '冰箱':'bīngxiāng','炉子':'lúzi','锅':'guō','碗':'wǎn','筷子':'kuàizi',
+    '盘子':'pánzi','食物':'shíwù','科学':'kēxué','科':'kē','冰':'bīng','箱':'xiāng','炉':'lú','碗':'wǎn','筷':'kuài','盘':'pán','食':'shí','物':'wù','科':'kē','冰':'bīng','箱':'xiāng'
 };
 function getSpacedPinyin(cn, fallbackPinyin) {
     // Si es un solo carácter, devuelve el pinyin original
@@ -1434,6 +1438,53 @@ const storiesData = {
     vocabHighlight: ['去', '回', '今天', '昨天', '一', '二', '三', '四', '五', '个']
   }
 };
+// ========== DATOS PARA COMBINACIONES ==========
+const combinationsData = {
+  // Bloque 1: Combinaciones creativas (ejemplo con 学)
+  creative: {
+    title: "🌱 Combinaciones creativas",
+    description: "Aprende cómo un carácter se combina con otros para formar nuevas palabras.",
+    baseChar: "学",
+    basePinyin: "xué",
+    baseMeaning: "estudiar",
+    combinations: [
+      { word: "学生", pinyin: "xuéshēng", meaning: "estudiante", components: "学 + 生" },
+      { word: "学校", pinyin: "xuéxiào", meaning: "escuela", components: "学 + 校" },
+      { word: "学习", pinyin: "xuéxí", meaning: "estudiar (verbo)", components: "学 + 习" },
+      { word: "大学", pinyin: "dàxué", meaning: "universidad", components: "大 + 学" },
+      { word: "科学", pinyin: "kēxué", meaning: "ciencia", components: "科 + 学" }
+    ],
+    story: {
+      cn: "我有一个朋友，他在大学学习。他是学生，喜欢科学。",
+      pinyin: "Wǒ yǒu yī ge péngyǒu, tā zài dàxué xuéxí. Tā shì xuéshēng, xǐhuān kēxué.",
+      es: "Tengo un amigo. Él estudia en la universidad. Es estudiante y le gusta la ciencia."
+    }
+  },
+  // Bloque 2: Escenario temático (La cocina)
+  thematic: {
+    title: "🍳 La cocina",
+    description: "Vocabulario y frases útiles relacionadas con la cocina.",
+    category: "cocina",
+    items: [
+      { cn: "桌子", pinyin: "zhuōzi", es: "mesa" },
+      { cn: "椅子", pinyin: "yǐzi", es: "silla" },
+      { cn: "冰箱", pinyin: "bīngxiāng", es: "nevera" },
+      { cn: "炉子", pinyin: "lúzi", es: "cocina / hornilla" },
+      { cn: "锅", pinyin: "guō", es: "olla / sartén" },
+      { cn: "碗", pinyin: "wǎn", es: "bol / tazón" },
+      { cn: "筷子", pinyin: "kuàizi", es: "palillos" },
+      { cn: "盘子", pinyin: "pánzi", es: "plato" },
+      { cn: "水", pinyin: "shuǐ", es: "agua" },
+      { cn: "食物", pinyin: "shíwù", es: "comida / alimento" }
+    ],
+    phrases: [
+      { cn: "桌子上面有一碗水", pinyin: "Zhuōzi shàngmiàn yǒu yī wǎn shuǐ", es: "Sobre la mesa hay un bol de agua." },
+      { cn: "冰箱里有食物", pinyin: "Bīngxiāng lǐ yǒu shíwù", es: "En la nevera hay comida." },
+      { cn: "我用筷子吃饭", pinyin: "Wǒ yòng kuàizi chī fàn", es: "Uso palillos para comer." },
+      { cn: "锅在炉子上面", pinyin: "Guō zài lúzi shàngmiàn", es: "La olla está sobre la hornilla." }
+    ]
+  }
+};
             // Fin de las lecciones HSK 1
 for (let i = 25; i <= 24; i++) lessonsData['1-' + i] = { vocab: [], grammar: [], scenario: [], phrases: [], exercises: [] };
             const lessonKeys = Object.keys(lessonsData).sort((a,b)=>parseInt(a.split('-')[1])-parseInt(b.split('-')[1]));
@@ -1460,6 +1511,9 @@ for (let i = 25; i <= 24; i++) lessonsData['1-' + i] = { vocab: [], grammar: [],
                 if (currentView === 'lessonExamFull') tb.innerHTML = `<span><span class="back-arrow" onclick="backToLesson()">←</span> 📝 Examen Lección ${lessonKeys[currentLessonIndex]}</span><button class="btn" onclick="logout()">Salir</button>`;
                 else if (currentView === 'starredVocab') tb.innerHTML = `<span><span class="back-arrow" onclick="backToLesson()">←</span> ⭐ Vocabulario destacado</span><button class="btn" onclick="logout()">Salir</button>`;
                 else if (currentView === 'starredPractice') tb.innerHTML = `<span><span class="back-arrow" onclick="openStarredView()">←</span> ▶ Practicar destacados</span><button class="btn" onclick="logout()">Salir</button>`;
+                else if (currentView === 'combinations') {
+        tb.innerHTML = `<span><span class="back-arrow" onclick="openCombinationsView()">←</span> 🧩 Combinaciones</span><button class="btn" onclick="logout()">Salir</button>`;
+    }
                 else {
                     const key = lessonKeys[currentLessonIndex]; const done = completedLessons.has(key);
                     tb.innerHTML = `<span>Lección ${key}</span><div style="display:flex;gap:0.4rem;">
@@ -1821,6 +1875,110 @@ window.checkStoryAnswer = (btn) => {
         fb.style.color = '#b05050';
         [...allOpts].find(b => b.dataset.opt === correct)?.classList.add('correct');
     }
+};
+// ========== VISTA DE COMBINACIONES ==========
+window.openCombinationsView = () => {
+  currentView = 'combinations';
+  renderCombinationsMainView();
+  closeSidebarOnMobile();
+};
+
+function renderCombinationsMainView() {
+  const html = `
+    <div class="section">
+      <h2>🧩 Combinaciones de palabras</h2>
+      <p>Explora cómo los caracteres se unen para formar nuevas palabras y aprende vocabulario temático.</p>
+      <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1.5rem;">
+        <button class="btn accent" onclick="renderCreativeCombinations()">🌱 Combinaciones creativas</button>
+        <button class="btn accent" onclick="renderThematicCombinations()">🍳 Escenario: La cocina</button>
+      </div>
+      <div id="combinationsDetailView" style="margin-top: 2rem;"></div>
+    </div>
+  `;
+  document.getElementById('contentArea').innerHTML = html;
+  updateTopbar();
+}
+
+window.renderCreativeCombinations = () => {
+  const data = combinationsData.creative;
+  let html = `
+    <div class="section">
+      <h3>${data.title}</h3>
+      <p>${data.description}</p>
+      <div style="background: var(--accent-light); padding: 1rem; border-radius: var(--radius); margin-bottom: 1rem;">
+        <strong>Carácter base:</strong> ${data.baseChar} (${data.basePinyin}) – ${data.baseMeaning}
+      </div>
+      <table class="vocab-table">
+        <thead><tr><th>Palabra</th><th>Pinyin</th><th>Significado</th><th>Combinación</th><th>🔊</th></tr></thead>
+        <tbody>
+  `;
+  data.combinations.forEach(comb => {
+    html += `
+      <tr>
+        <td class="cn">${comb.word}</td>
+        <td>${comb.pinyin}</td>
+        <td>${comb.meaning}</td>
+        <td>${comb.components}</td>
+        <td><button class="btn audio-btn" onclick="window._speak('${comb.word}')">🔊</button></td>
+      </tr>
+    `;
+  });
+  html += `
+        </tbody>
+      </table>
+      <div class="grammar-card" style="margin-top: 1.5rem;">
+        <h3>📖 Mini historia con estas palabras</h3>
+        <div><strong>${data.story.cn}</strong><br><small>${data.story.pinyin}</small><br>${data.story.es}</div>
+        <button class="btn audio-btn" style="margin-top:0.5rem;" onclick="window._speak('${data.story.cn}')">🔊 Escuchar historia</button>
+      </div>
+      <button class="btn" style="margin-top: 1rem;" onclick="renderCombinationsMainView()">← Volver</button>
+    </div>
+  `;
+  document.getElementById('combinationsDetailView').innerHTML = html;
+  updateTopbar();
+};
+
+window.renderThematicCombinations = () => {
+  const data = combinationsData.thematic;
+  let html = `
+    <div class="section">
+      <h3>${data.title}</h3>
+      <p>${data.description}</p>
+      <table class="vocab-table">
+        <thead><tr><th>Carácter</th><th>Pinyin</th><th>Español</th><th>🔊</th></tr></thead>
+        <tbody>
+  `;
+  data.items.forEach(item => {
+    html += `
+      <tr>
+        <td class="cn">${item.cn}</td>
+        <td>${item.pinyin}</td>
+        <td>${item.es}</td>
+        <td><button class="btn audio-btn" onclick="window._speak('${item.cn}')">🔊</button></td>
+      </tr>
+    `;
+  });
+  html += `
+        </tbody>
+      </table>
+      <div class="section" style="margin-top: 1.5rem;">
+        <h3>📝 Frases de ejemplo</h3>
+  `;
+  data.phrases.forEach(phrase => {
+    html += `
+      <div class="phrase-card">
+        <div><strong>${phrase.cn}</strong><br><small>${phrase.pinyin}</small><br>${phrase.es}</div>
+        <button class="btn audio-btn" onclick="window._speak('${phrase.cn}')">🔊</button>
+      </div>
+    `;
+  });
+  html += `
+      </div>
+      <button class="btn" style="margin-top: 1rem;" onclick="renderCombinationsMainView()">← Volver</button>
+    </div>
+  `;
+  document.getElementById('combinationsDetailView').innerHTML = html;
+  updateTopbar();
 };
 
             updateSidebar(); navigateTo(0);

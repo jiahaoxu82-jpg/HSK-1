@@ -124,11 +124,18 @@
             .vocab-table td.cn { font-size: 1rem; }
         }
     </style>
-    <!-- Para Android y navegadores modernos -->
-<link rel="icon" href="Logo.jpg" type="image/jpg">
+<!-- Para iPhone y iPad -->
+<link rel="apple-touch-icon" href="icono.png">
 
-<!-- Para iPhone (Muy importante para que parezca app) -->
-<link rel="apple-touch-icon" href="Logo.jpg">
+<!-- Para Android y otros -->
+<link rel="icon" sizes="192x192" href="icono.png">
+<!-- Esto elimina la barra de navegación en Android y iOS -->
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<!-- Esto define el nombre que saldrá debajo del icono -->
+<meta name="apple-mobile-web-app-title" content="NombreDeTuApp">
 
 </head>
 <body>

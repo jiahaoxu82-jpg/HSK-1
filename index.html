@@ -1795,7 +1795,13 @@ for (let i = 25; i <= 24; i++) lessonsData['1-' + i] = { vocab: [], grammar: [],
             function generateFullExam(data) {
                 const qs = [];
                 data.vocab.forEach(v => { const wrongs = data.vocab.filter(x => x.cn !== v.cn).slice(0,4).map(x => x.es); while(wrongs.length < 4) wrongs.push('---'); const opts = [v.es, ...wrongs].sort(() => Math.random() - 0.5); qs.push({type:'choice', question:`¿Qué significa "${v.cn} (${v.pinyin})"?`, options:opts, correct:opts.indexOf(v.es)}); });
-                for(let i=0; i<4; i++) { const v = data.vocab[Math.floor(Math.random()*data.vocab.length)]; const wrongs = data.vocab.filter(x => x.cn !== v.cn).slice(0,4).map(x => `${x.cn} (${x.pinyin})`); const allOpts = [`${v.cn} (${v.pinyin})`, ...wrongs]; qs.push({type:'audio-word', audio:v.audio, options:allOpts.sort(()=>Math.random()-0.5), correct:0}); }
+                for(let i=0; i<4; i++) { 
+    const v = data.vocab[Math.floor(Math.random()*data.vocab.length)]; 
+    const wrongs = data.vocab.filter(x => x.cn !== v.cn).slice(0,4).map(x => `${x.cn} (${x.pinyin})`); 
+    const allOpts = [`${v.cn} (${v.pinyin})`, ...wrongs].sort(() => Math.random() - 0.5);
+    const correctIdx = allOpts.indexOf(`${v.cn} (${v.pinyin})`);
+    qs.push({type:'audio-word', audio:v.audio, options:allOpts, correct: correctIdx}); 
+}
                 if(data.vocab.length >= 4) qs.push({type:'match', pairs:data.vocab.slice(0,5).map(v=>[`${v.cn} (${v.pinyin})`,v.es])});
                 data.phrases.slice(0,4).forEach(p => { const clean = p.cn.replace(/[，。？！]/g,''); const chars = clean.split(''); const words = chars.map(c => { const v = data.vocab.find(x => x.cn === c); return v ? `${c} (${v.pinyin})` : (pinyinMap[c] ? `${c} (${pinyinMap[c]})` : `${c} (?)`); }); qs.push({type:'sentence-builder', words, correct:clean, instruction:`Ordena: "${p.es}"`}); });
                 return qs.slice(0, 20);

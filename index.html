@@ -112,17 +112,18 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
         @media (max-width: 768px) {
-            body { flex-direction: column; }
-            .menu-toggle { display: block; }
-            .sidebar { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; z-index: 15; transition: left 0.3s ease; box-shadow: var(--shadow-md); }
-            .sidebar.open { left: 0; }
-            .main { height: auto; padding-top: 50px; }
-            .topbar { padding: 0.6rem 0.8rem; }
-            .content-area { padding: 1rem; }
-            .vocab-table { font-size: 0.7rem; }
-            .vocab-table th, .vocab-table td { padding: 0.3rem 0.4rem; }
-            .vocab-table td.cn { font-size: 1rem; }
-        }
+    body { flex-direction: column; }
+    .menu-toggle { display: block; }
+    .sidebar { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; z-index: 15; transition: left 0.3s ease; box-shadow: var(--shadow-md); }
+    .sidebar.open { left: 0; }
+    .main { height: auto; padding-top: 50px; }
+    .topbar { padding: 0.4rem 0.5rem; gap: 0.3rem; flex-wrap: wrap; }
+    .topbar .btn { padding: 0.25rem 0.5rem; font-size: 0.7rem; }
+    .content-area { padding: 1rem; }
+    .vocab-table { font-size: 0.7rem; }
+    .vocab-table th, .vocab-table td { padding: 0.3rem 0.4rem; }
+    .vocab-table td.cn { font-size: 1rem; }
+}
         .story-quiz-option {
     display: inline-block;
     padding: 0.4rem 0.8rem;
@@ -143,6 +144,12 @@ body.hide-py .py { display: none; }
 body.hide-py .pinyin-col { display: none; }
 body.hide-py .vocab-table th:nth-child(2),
 body.hide-py .vocab-table td:nth-child(2) { display: none; }
+/* Botones de toggle tamaño fijo */
+#btnTogglePinyin, #btnToggleSpanish {
+    min-width: 58px;
+    text-align: center;
+    justify-content: center;
+}
 /* Toggle español */
 body.hide-es .es { display: none; }
     </style>
@@ -266,7 +273,7 @@ function getSpacedPinyin(cn, fallbackPinyin) {
     });
     for(let i=0; i<4; i++) {
         const v = vocab[Math.floor(Math.random()*vocab.length)];
-        const wrongs = vocab.filter(x => x.cn !== v.cn).slice(0,4).map(x => `${x.cn} (${getSpacedPinyin(x.cn, x.pinyin)})`);
+        const wrongs = vocab.filter(x => x.cn !== v.cn).slice(0,4).map(x => `${x.cn} (<span class='py'>${getSpacedPinyin(x.cn, x.pinyin)}</span>)`);
         const opts = [`${v.cn} (<span class='py'>${getSpacedPinyin(v.cn, v.pinyin)}</span>)`, ...wrongs].sort(() => Math.random() - 0.5);
         ex.push({type:'audio-word', audio:v.audio, options:opts, correct: opts.indexOf(`${v.cn} (${getSpacedPinyin(v.cn, v.pinyin)})`)});
     }
@@ -1547,7 +1554,9 @@ window.togglePinyin = function() {
     document.body.classList.toggle('hide-py', !showPinyin);
     // Actualizar el botón de pinyin en la barra superior
     const pinyinBtn = document.getElementById('btnTogglePinyin');
-    if (pinyinBtn) pinyinBtn.innerHTML = `🔤 Pinyin ${showPinyin ? '✅' : '❌'}`;
+if (pinyinBtn) pinyinBtn.innerHTML = showPinyin ? '🔤 ✅' : '🔤 ❌';
+const spanishBtn = document.getElementById('btnToggleSpanish');
+if (spanishBtn) spanishBtn.innerHTML = showSpanish ? '🇪🇸 ✅' : '🇪🇸 ❌';
 };
 // aplicar estado inicial
 if (!showPinyin) document.body.classList.add('hide-py');
@@ -1581,31 +1590,39 @@ if (!showSpanish) document.body.classList.add('hide-es');
     const tb = document.getElementById('topbar');
     if (currentView === 'lessonExamFull') {
         tb.innerHTML = `<span><span class="back-arrow" onclick="backToLesson()">←</span> 📝 Examen Lección ${lessonKeys[currentLessonIndex]}</span>
-            <button class="btn" id="btnTogglePinyin" onclick="togglePinyin()">🔤 Pinyin ${showPinyin ? '✅' : '❌'}</button>
-            <button class="btn" id="btnToggleSpanish" onclick="toggleSpanish()">🇪🇸 ${showSpanish ? 'Ocultar español' : 'Mostrar español'}</button>
-            <button class="btn" onclick="logout()">Salir</button>`;
+            <div style="display:flex;flex-wrap:wrap;gap:0.3rem;">
+    <button class="btn" id="btnTogglePinyin" onclick="togglePinyin()">🔤 ${showPinyin ? '✅' : '❌'}</button>
+<button class="btn" id="btnToggleSpanish" onclick="toggleSpanish()">🇪🇸 ${showSpanish ? '✅' : '❌'}</button>
+    <button class="btn" onclick="logout()">Salir</button>
+</div>`;
     }
     else if (currentView === 'starredVocab') {
         tb.innerHTML = `<span><span class="back-arrow" onclick="backToLesson()">←</span> ⭐ Vocabulario destacado</span>
-            <button class="btn" id="btnTogglePinyin" onclick="togglePinyin()">🔤 Pinyin ${showPinyin ? '✅' : '❌'}</button>
-            <button class="btn" id="btnToggleSpanish" onclick="toggleSpanish()">🇪🇸 ${showSpanish ? 'Ocultar español' : 'Mostrar español'}</button>
-            <button class="btn" onclick="logout()">Salir</button>`;
+            <div style="display:flex;flex-wrap:wrap;gap:0.3rem;">
+    <button class="btn" id="btnTogglePinyin" onclick="togglePinyin()">🔤 ${showPinyin ? '✅' : '❌'}</button>
+<button class="btn" id="btnToggleSpanish" onclick="toggleSpanish()">🇪🇸 ${showSpanish ? '✅' : '❌'}</button>
+    <button class="btn" onclick="logout()">Salir</button>
+</div>`;
     }
     else if (currentView === 'starredPractice') {
         tb.innerHTML = `<span><span class="back-arrow" onclick="openStarredView()">←</span> ▶ Practicar destacados</span>
-            <button class="btn" id="btnTogglePinyin" onclick="togglePinyin()">🔤 Pinyin ${showPinyin ? '✅' : '❌'}</button>
-            <button class="btn" id="btnToggleSpanish" onclick="toggleSpanish()">🇪🇸 ${showSpanish ? 'Ocultar español' : 'Mostrar español'}</button>
-            <button class="btn" onclick="logout()">Salir</button>`;
+            <div style="display:flex;flex-wrap:wrap;gap:0.3rem;">
+    <button class="btn" id="btnTogglePinyin" onclick="togglePinyin()">🔤 ${showPinyin ? '✅' : '❌'}</button>
+<button class="btn" id="btnToggleSpanish" onclick="toggleSpanish()">🇪🇸 ${showSpanish ? '✅' : '❌'}</button>
+    <button class="btn" onclick="logout()">Salir</button>
+</div>`;
     }
     else if (currentView === 'combinations') {
         tb.innerHTML = `<span><span class="back-arrow" onclick="openCombinationsView()">←</span> 🧩 Combinaciones</span>
-            <button class="btn" id="btnTogglePinyin" onclick="togglePinyin()">🔤 Pinyin ${showPinyin ? '✅' : '❌'}</button>
-            <button class="btn" id="btnToggleSpanish" onclick="toggleSpanish()">🇪🇸 ${showSpanish ? 'Ocultar español' : 'Mostrar español'}</button>
-            <button class="btn" onclick="logout()">Salir</button>`;
+            <div style="display:flex;flex-wrap:wrap;gap:0.3rem;">
+    <button class="btn" id="btnTogglePinyin" onclick="togglePinyin()">🔤 ${showPinyin ? '✅' : '❌'}</button>
+<button class="btn" id="btnToggleSpanish" onclick="toggleSpanish()">🇪🇸 ${showSpanish ? '✅' : '❌'}</button>
+    <button class="btn" onclick="logout()">Salir</button>
+</div>`;
     }
     else {
         const key = lessonKeys[currentLessonIndex]; const done = completedLessons.has(key);
-        tb.innerHTML = `<span>Lección ${key}</span><div style="display:flex;gap:0.4rem;">
+        tb.innerHTML = `<span>Lección ${key}</span><div style="display:flex;flex-wrap:wrap;gap:0.3rem;">
             <button class="btn" id="btnTogglePinyin" onclick="togglePinyin()">🔤 Pinyin ${showPinyin ? '✅' : '❌'}</button>
             <button class="btn" id="btnToggleSpanish" onclick="toggleSpanish()">🇪🇸 ${showSpanish ? 'Ocultar español' : 'Mostrar español'}</button>
             <button class="btn" id="btnPrev">←</button><button class="btn" id="btnNext">→</button>
@@ -1618,9 +1635,9 @@ if (!showSpanish) document.body.classList.add('hide-es');
         document.getElementById('btnFullExam').onclick = () => { currentView = 'lessonExamFull'; renderFullExamView(); };
     }
     const pinyinBtn = document.getElementById('btnTogglePinyin');
-    if (pinyinBtn) pinyinBtn.innerHTML = `🔤 Pinyin ${showPinyin ? '✅' : '❌'}`;
-    const spanishBtn = document.getElementById('btnToggleSpanish');
-    if (spanishBtn) spanishBtn.innerHTML = `🇪🇸 ${showSpanish ? 'Ocultar español' : 'Mostrar español'}`;
+if (pinyinBtn) pinyinBtn.innerHTML = showPinyin ? '🔤 ✅' : '🔤 ❌';
+const spanishBtn = document.getElementById('btnToggleSpanish');
+if (spanishBtn) spanishBtn.innerHTML = showSpanish ? '🇪🇸 ✅' : '🇪🇸 ❌';
 }
 function refreshView() {
     if (currentView === 'lessonExamFull') { renderFullExamView(); }
@@ -1657,7 +1674,9 @@ function refreshView() {
                     html += '</tbody></table><div style="margin-top:1.5rem;"><button class="btn accent" onclick="startStarredPractice()">▶ Practicar este vocabulario</button></div>';
                 }
                 html += '</div>'; document.getElementById('contentArea').innerHTML = html; updateTopbar(); const pinyinBtn = document.getElementById('btnTogglePinyin');
-if (pinyinBtn) pinyinBtn.innerHTML = `🔤 Pinyin ${showPinyin ? '✅' : '❌'}`;
+if (pinyinBtn) pinyinBtn.innerHTML = showPinyin ? '🔤 ✅' : '🔤 ❌';
+const spanishBtn = document.getElementById('btnToggleSpanish');
+if (spanishBtn) spanishBtn.innerHTML = showSpanish ? '🇪🇸 ✅' : '🇪🇸 ❌';
             }
 
             window.startStarredPractice = () => {
@@ -1841,7 +1860,7 @@ if (pinyinBtn) pinyinBtn.innerHTML = `🔤 Pinyin ${showPinyin ? '✅' : '❌'}`
     data.vocab.forEach(v => { const wrongs = data.vocab.filter(x => x.cn !== v.cn).slice(0,4).map(x => x.es); while(wrongs.length < 4) wrongs.push('---'); const opts = [v.es, ...wrongs].sort(() => Math.random() - 0.5); qs.push({type:'choice', question:`¿Qué significa "${v.cn} (<span class='py'>${v.pinyin}</span>)"?`, options:opts, correct:opts.indexOf(v.es)}); });
     for(let i=0; i<4; i++) { 
         const v = data.vocab[Math.floor(Math.random()*data.vocab.length)]; 
-        const wrongs = data.vocab.filter(x => x.cn !== v.cn).slice(0,4).map(x => `${x.cn} (${x.pinyin})`); 
+        const wrongs = data.vocab.filter(x => x.cn !== v.cn).slice(0,4).map(x => `${x.cn} (<span class='py'>${x.pinyin}</span>)`); 
         const allOpts = [`${v.cn} (<span class='py'>${v.pinyin}</span>)`, ...wrongs].sort(() => Math.random() - 0.5);
         const correctIdx = allOpts.indexOf(`${v.cn} (<span class='py'>${v.pinyin}</span>)`);
         qs.push({type:'audio-word', audio:v.audio, options:allOpts, correct: correctIdx}); 

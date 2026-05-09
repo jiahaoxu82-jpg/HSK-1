@@ -138,6 +138,13 @@
 .story-quiz-option.correct { border-color: var(--success) !important; background: #e0f0e0 !important; }
 .story-quiz-option.wrong { border-color: #e0a0a0 !important; background: #fff0f0 !important; }
 .story-quiz-option:disabled { pointer-events: none; opacity: 0.7; }
+/* Toggle pinyin */
+body.hide-py .py { display: none; }
+body.hide-py .pinyin-col { display: none; }
+body.hide-py .vocab-table th:nth-child(2),
+body.hide-py .vocab-table td:nth-child(2) { display: none; }
+/* Toggle español */
+body.hide-es .es { display: none; }
     </style>
 <!-- Para iPhone y iPad -->
 <link rel="apple-touch-icon" href="Icono.png">
@@ -231,67 +238,57 @@ function getSpacedPinyin(cn, fallbackPinyin) {
     return parts.join(' ');
 }
             function generate30Exercises(vocab, phrases) {
-                let ex = [];
-                vocab.forEach(v => {
-                    const wrongs = vocab.filter(x => x.cn !== v.cn).slice(0,4).map(x => x.es);
-                    while(wrongs.length < 4) wrongs.push('---');
-                    const opts = [v.es, ...wrongs].sort(() => Math.random() - 0.5);
-                    ex.push({type:'choice', question:`¿Qué significa "${v.cn} (${getSpacedPinyin(v.cn, v.pinyin)})"?`, options:opts, correct:opts.indexOf(v.es)});
-                });
-                for(let i=0; i<4; i++) {
-                    const v = vocab[Math.floor(Math.random()*vocab.length)];
-                    const wrongChars = vocab.filter(x => x.cn !== v.cn).slice(0,4).map(x => `${x.cn} (${getSpacedPinyin(x.cn, x.pinyin)})`);
-                    const chars = [`${v.cn} (${getSpacedPinyin(v.cn, v.pinyin)})`, ...wrongChars].sort(() => Math.random() - 0.5);
-                    ex.push({type:'char-select', sentence:`___ significa "${v.es}".`, answer:v.cn, chars:chars});
-                }
-                if(vocab.length >= 5) ex.push({type:'match', pairs: vocab.slice(0,5).map(v => [`${v.cn} (${v.pinyin})`, v.es])});
-                else ex.push({type:'match', pairs: vocab.map(v => [`${v.cn} (${v.pinyin})`, v.es])});
-                phrases.slice(0,4).forEach(p => {
-                    const clean = p.cn.replace(/[，。？！]/g,'');
-                    const chars = clean.split('');
-                    const words = chars.map(c => {
-    const v = vocab.find(x => x.cn === c);
-    if (v) {
-        const spacedPinyin = getSpacedPinyin(v.cn, v.pinyin);
-        return `${c} (${spacedPinyin})`;
+    let ex = [];
+    vocab.forEach(v => {
+        const wrongs = vocab.filter(x => x.cn !== v.cn).slice(0,4).map(x => x.es);
+        while(wrongs.length < 4) wrongs.push('---');
+        const opts = [v.es, ...wrongs].sort(() => Math.random() - 0.5);
+        ex.push({type:'choice', question:`¿Qué significa "${v.cn} (<span class='py'>${getSpacedPinyin(v.cn, v.pinyin)}</span>)"?`, options:opts, correct:opts.indexOf(v.es)});
+    });
+    for(let i=0; i<4; i++) {
+        const v = vocab[Math.floor(Math.random()*vocab.length)];
+        const wrongChars = vocab.filter(x => x.cn !== v.cn).slice(0,4).map(x => `${x.cn} (<span class='py'>${getSpacedPinyin(x.cn, x.pinyin)}</span>)`);
+        const chars = [`${v.cn} (<span class='py'>${getSpacedPinyin(v.cn, v.pinyin)}</span>)`, ...wrongChars].sort(() => Math.random() - 0.5);
+        ex.push({type:'char-select', sentence:`___ significa "<span class='es'>${v.es}</span>".`, answer:v.cn, chars:chars});
     }
-    if (pinyinMap[c]) {
-        return `${c} (${pinyinMap[c]})`;
+    if(vocab.length >= 5) ex.push({type:'match', pairs: vocab.slice(0,5).map(v => [`${v.cn} (${v.pinyin})`, v.es])});
+    else ex.push({type:'match', pairs: vocab.map(v => [`${v.cn} (${v.pinyin})`, v.es])});
+    phrases.slice(0,4).forEach(p => {
+        const clean = p.cn.replace(/[，。？！]/g,'');
+        const chars = clean.split('');
+        const words = chars.map(c => {
+            const v = vocab.find(x => x.cn === c);
+            if (v) return `${c} (<span class='py'>${getSpacedPinyin(v.cn, v.pinyin)}</span>)`;
+            if (pinyinMap[c]) return `${c} (<span class='py'>${pinyinMap[c]}</span>)`;
+            return `${c} (?)`;
+        });
+        ex.push({type:'sentence-builder', words, correct:clean, instruction:`Ordena: "<span class='es'>${p.es}</span>"`});
+    });
+    for(let i=0; i<4; i++) {
+        const v = vocab[Math.floor(Math.random()*vocab.length)];
+        const wrongs = vocab.filter(x => x.cn !== v.cn).slice(0,4).map(x => `${x.cn} (${getSpacedPinyin(x.cn, x.pinyin)})`);
+        const opts = [`${v.cn} (<span class='py'>${getSpacedPinyin(v.cn, v.pinyin)}</span>)`, ...wrongs].sort(() => Math.random() - 0.5);
+        ex.push({type:'audio-word', audio:v.audio, options:opts, correct: opts.indexOf(`${v.cn} (${getSpacedPinyin(v.cn, v.pinyin)})`)});
     }
-    return `${c} (?)`;
-});
-                    ex.push({type:'sentence-builder', words, correct:clean, instruction:`Ordena: "${p.es}"`});
-                });
-                for(let i=0; i<4; i++) {
-                    const v = vocab[Math.floor(Math.random()*vocab.length)];
-                    const wrongs = vocab.filter(x => x.cn !== v.cn).slice(0,4).map(x => `${x.cn} (${getSpacedPinyin(x.cn, x.pinyin)})`);
-                    const opts = [`${v.cn} (${getSpacedPinyin(v.cn, v.pinyin)})`, ...wrongs].sort(() => Math.random() - 0.5);
-                    ex.push({type:'audio-word', audio:v.audio, options:opts, correct: opts.indexOf(`${v.cn} (${getSpacedPinyin(v.cn, v.pinyin)})`)});
-                }
-                phrases.slice(4,8).forEach(p => {
-                    const clean = p.cn.replace(/[，。？！]/g,'');
-                    const chars = clean.split('');
-                    const words = chars.map(c => {
-    const v = vocab.find(x => x.cn === c);
-    if (v) {
-        const spacedPinyin = getSpacedPinyin(v.cn, v.pinyin);
-        return `${c} (${spacedPinyin})`;
+    phrases.slice(4,8).forEach(p => {
+        const clean = p.cn.replace(/[，。？！]/g,'');
+        const chars = clean.split('');
+        const words = chars.map(c => {
+            const v = vocab.find(x => x.cn === c);
+            if (v) return `${c} (<span class='py'>${getSpacedPinyin(v.cn, v.pinyin)}</span>)`;
+            if (pinyinMap[c]) return `${c} (<span class='py'>${pinyinMap[c]}</span>)`;
+            return `${c} (?)`;
+        });
+        ex.push({type:'audio-order', audio:clean, words, correct:clean});
+    });
+    for(let i=0; i<4; i++) {
+        const correct = phrases[Math.floor(Math.random()*phrases.length)];
+        const wrongs = phrases.filter(p => p !== correct).slice(0,4).map(p => p.cn);
+        const opts = [correct.cn, ...wrongs].sort(() => Math.random() - 0.5);
+        ex.push({type:'select-phrase', question:`Elige la traducción de: "<span class='es'>${correct.es}</span>"`, options:opts, correct: opts.indexOf(correct.cn)});
     }
-    if (pinyinMap[c]) {
-        return `${c} (${pinyinMap[c]})`;
-    }
-    return `${c} (?)`;
-});
-                    ex.push({type:'audio-order', audio:clean, words, correct:clean});
-                });
-                for(let i=0; i<4; i++) {
-                    const correct = phrases[Math.floor(Math.random()*phrases.length)];
-                    const wrongs = phrases.filter(p => p !== correct).slice(0,4).map(p => p.cn);
-                    const opts = [correct.cn, ...wrongs].sort(() => Math.random() - 0.5);
-                    ex.push({type:'select-phrase', question:`Elige la traducción de: "${correct.es}"`, options:opts, correct: opts.indexOf(correct.cn)});
-                }
-                return ex.slice(0,30);
-            }
+    return ex.slice(0,30);
+}
 
             const lessonsData = {};
 
@@ -1543,6 +1540,25 @@ const combinationsData = {
             // Fin de las lecciones HSK 1
 for (let i = 25; i <= 24; i++) lessonsData['1-' + i] = { vocab: [], grammar: [], scenario: [], phrases: [], exercises: [] };
             const lessonKeys = Object.keys(lessonsData).sort((a,b)=>parseInt(a.split('-')[1])-parseInt(b.split('-')[1]));
+            let showPinyin = localStorage.getItem('hsk1_showPinyin') !== 'false';
+window.togglePinyin = function() {
+    showPinyin = !showPinyin;
+    localStorage.setItem('hsk1_showPinyin', showPinyin);
+    document.body.classList.toggle('hide-py', !showPinyin);
+    // Actualizar el botón de pinyin en la barra superior
+    const pinyinBtn = document.getElementById('btnTogglePinyin');
+    if (pinyinBtn) pinyinBtn.innerHTML = `🔤 Pinyin ${showPinyin ? '✅' : '❌'}`;
+};
+// aplicar estado inicial
+if (!showPinyin) document.body.classList.add('hide-py');
+let showSpanish = localStorage.getItem('hsk1_showSpanish') !== 'false';
+window.toggleSpanish = function() {
+    showSpanish = !showSpanish;
+    localStorage.setItem('hsk1_showSpanish', showSpanish);
+    document.body.classList.toggle('hide-es', !showSpanish);
+    refreshView();
+};
+if (!showSpanish) document.body.classList.add('hide-es');
             let currentLessonIndex = 0, currentView = 'lesson';
             let completedLessons = new Set(JSON.parse(localStorage.getItem('hsk1_progress')||'[]'));
             let starredVocab = new Set(JSON.parse(localStorage.getItem('hsk1_starredVocab')||'[]').map(v=>JSON.stringify(v)));
@@ -1562,27 +1578,60 @@ for (let i = 25; i <= 24; i++) lessonsData['1-' + i] = { vocab: [], grammar: [],
             }
 
             function updateTopbar() {
-                const tb = document.getElementById('topbar');
-                if (currentView === 'lessonExamFull') tb.innerHTML = `<span><span class="back-arrow" onclick="backToLesson()">←</span> 📝 Examen Lección ${lessonKeys[currentLessonIndex]}</span><button class="btn" onclick="logout()">Salir</button>`;
-                else if (currentView === 'starredVocab') tb.innerHTML = `<span><span class="back-arrow" onclick="backToLesson()">←</span> ⭐ Vocabulario destacado</span><button class="btn" onclick="logout()">Salir</button>`;
-                else if (currentView === 'starredPractice') tb.innerHTML = `<span><span class="back-arrow" onclick="openStarredView()">←</span> ▶ Practicar destacados</span><button class="btn" onclick="logout()">Salir</button>`;
-                else if (currentView === 'combinations') {
-        tb.innerHTML = `<span><span class="back-arrow" onclick="openCombinationsView()">←</span> 🧩 Combinaciones</span><button class="btn" onclick="logout()">Salir</button>`;
+    const tb = document.getElementById('topbar');
+    if (currentView === 'lessonExamFull') {
+        tb.innerHTML = `<span><span class="back-arrow" onclick="backToLesson()">←</span> 📝 Examen Lección ${lessonKeys[currentLessonIndex]}</span>
+            <button class="btn" id="btnTogglePinyin" onclick="togglePinyin()">🔤 Pinyin ${showPinyin ? '✅' : '❌'}</button>
+            <button class="btn" id="btnToggleSpanish" onclick="toggleSpanish()">🇪🇸 ${showSpanish ? 'Ocultar español' : 'Mostrar español'}</button>
+            <button class="btn" onclick="logout()">Salir</button>`;
     }
-                else {
-                    const key = lessonKeys[currentLessonIndex]; const done = completedLessons.has(key);
-                    tb.innerHTML = `<span>Lección ${key}</span><div style="display:flex;gap:0.4rem;">
-                        <button class="btn" id="btnPrev">←</button><button class="btn" id="btnNext">→</button>
-                        <button class="btn success" id="btnComplete">${done?'✓':'Marcar'}</button>
-                        <button class="btn exam-btn" id="btnFullExam">📝 Realizar examen</button>
-                        <button class="btn" onclick="logout()">Salir</button></div>`;
-                    document.getElementById('btnPrev').onclick = () => navigateTo(currentLessonIndex-1);
-                    document.getElementById('btnNext').onclick = () => navigateTo(currentLessonIndex+1);
-                    document.getElementById('btnComplete').onclick = () => { if(completedLessons.has(key)) completedLessons.delete(key); else completedLessons.add(key); saveProgress(); renderContent(); };
-                    document.getElementById('btnFullExam').onclick = () => { currentView = 'lessonExamFull'; renderFullExamView(); };
-                }
-            }
-
+    else if (currentView === 'starredVocab') {
+        tb.innerHTML = `<span><span class="back-arrow" onclick="backToLesson()">←</span> ⭐ Vocabulario destacado</span>
+            <button class="btn" id="btnTogglePinyin" onclick="togglePinyin()">🔤 Pinyin ${showPinyin ? '✅' : '❌'}</button>
+            <button class="btn" id="btnToggleSpanish" onclick="toggleSpanish()">🇪🇸 ${showSpanish ? 'Ocultar español' : 'Mostrar español'}</button>
+            <button class="btn" onclick="logout()">Salir</button>`;
+    }
+    else if (currentView === 'starredPractice') {
+        tb.innerHTML = `<span><span class="back-arrow" onclick="openStarredView()">←</span> ▶ Practicar destacados</span>
+            <button class="btn" id="btnTogglePinyin" onclick="togglePinyin()">🔤 Pinyin ${showPinyin ? '✅' : '❌'}</button>
+            <button class="btn" id="btnToggleSpanish" onclick="toggleSpanish()">🇪🇸 ${showSpanish ? 'Ocultar español' : 'Mostrar español'}</button>
+            <button class="btn" onclick="logout()">Salir</button>`;
+    }
+    else if (currentView === 'combinations') {
+        tb.innerHTML = `<span><span class="back-arrow" onclick="openCombinationsView()">←</span> 🧩 Combinaciones</span>
+            <button class="btn" id="btnTogglePinyin" onclick="togglePinyin()">🔤 Pinyin ${showPinyin ? '✅' : '❌'}</button>
+            <button class="btn" id="btnToggleSpanish" onclick="toggleSpanish()">🇪🇸 ${showSpanish ? 'Ocultar español' : 'Mostrar español'}</button>
+            <button class="btn" onclick="logout()">Salir</button>`;
+    }
+    else {
+        const key = lessonKeys[currentLessonIndex]; const done = completedLessons.has(key);
+        tb.innerHTML = `<span>Lección ${key}</span><div style="display:flex;gap:0.4rem;">
+            <button class="btn" id="btnTogglePinyin" onclick="togglePinyin()">🔤 Pinyin ${showPinyin ? '✅' : '❌'}</button>
+            <button class="btn" id="btnToggleSpanish" onclick="toggleSpanish()">🇪🇸 ${showSpanish ? 'Ocultar español' : 'Mostrar español'}</button>
+            <button class="btn" id="btnPrev">←</button><button class="btn" id="btnNext">→</button>
+            <button class="btn success" id="btnComplete">${done?'✓':'Marcar'}</button>
+            <button class="btn exam-btn" id="btnFullExam">📝 Realizar examen</button>
+            <button class="btn" onclick="logout()">Salir</button></div>`;
+        document.getElementById('btnPrev').onclick = () => navigateTo(currentLessonIndex-1);
+        document.getElementById('btnNext').onclick = () => navigateTo(currentLessonIndex+1);
+        document.getElementById('btnComplete').onclick = () => { if(completedLessons.has(key)) completedLessons.delete(key); else completedLessons.add(key); saveProgress(); renderContent(); };
+        document.getElementById('btnFullExam').onclick = () => { currentView = 'lessonExamFull'; renderFullExamView(); };
+    }
+    const pinyinBtn = document.getElementById('btnTogglePinyin');
+    if (pinyinBtn) pinyinBtn.innerHTML = `🔤 Pinyin ${showPinyin ? '✅' : '❌'}`;
+    const spanishBtn = document.getElementById('btnToggleSpanish');
+    if (spanishBtn) spanishBtn.innerHTML = `🇪🇸 ${showSpanish ? 'Ocultar español' : 'Mostrar español'}`;
+}
+function refreshView() {
+    if (currentView === 'lessonExamFull') { renderFullExamView(); }
+    else if (currentView === 'starredVocab') { renderStarredVocabView(); }
+    else if (currentView === 'starredPractice') { renderStarredPracticeView(window._starredPracticeExercises); }
+    else if (currentView === 'combinations') { updateTopbar(); }
+    else if (currentView === 'stories') { openStoriesView(); }
+    else if (currentView === 'storyDetail') { /* no recargar historia, solo actualizar topbar */ updateTopbar(); }
+    else if (currentView === 'games') { openGamesView(); }
+    else { renderContent(); }
+}
             function navigateTo(i) { if(i<0||i>=lessonKeys.length) return; currentLessonIndex=i; currentView='lesson'; renderContent(); }
             window.backToLesson = () => { currentView = 'lesson'; renderContent(); };
 
@@ -1603,11 +1652,12 @@ for (let i = 25; i <= 24; i++) lessonsData['1-' + i] = { vocab: [], grammar: [],
                     html += '<table class="vocab-table"><thead><tr><th>汉字</th><th>Pinyin</th><th>Español</th><th>Audio</th><th>⭐</th></tr></thead><tbody>';
                     [...starredVocab].forEach(itemStr => {
                         const item = JSON.parse(itemStr);
-                        html += `<tr><td class="cn">${item.cn}</td><td>${item.pinyin}</td><td>${item.es}</td><td><button class="btn audio-btn" onclick="window._speak('${item.audio}')">🔊</button></td><td><button class="star-btn active" data-vocab-key='${itemStr}' onclick="window.toggleStar(this.dataset.vocabKey, this)">★</button></td></tr>`;
+                        html += `<tr><td class="cn">${item.cn}</td><td>${item.pinyin}</td><td><span class="es">${item.es}</span></td><td><button class="btn audio-btn" onclick="window._speak('${item.audio}')">🔊</button></td><td><button class="star-btn active" data-vocab-key='${itemStr}' onclick="window.toggleStar(this.dataset.vocabKey, this)">★</button></td></tr>`;
                     });
                     html += '</tbody></table><div style="margin-top:1.5rem;"><button class="btn accent" onclick="startStarredPractice()">▶ Practicar este vocabulario</button></div>';
                 }
-                html += '</div>'; document.getElementById('contentArea').innerHTML = html; updateTopbar();
+                html += '</div>'; document.getElementById('contentArea').innerHTML = html; updateTopbar(); const pinyinBtn = document.getElementById('btnTogglePinyin');
+if (pinyinBtn) pinyinBtn.innerHTML = `🔤 Pinyin ${showPinyin ? '✅' : '❌'}`;
             }
 
             window.startStarredPractice = () => {
@@ -1629,7 +1679,7 @@ for (let i = 25; i <= 24; i++) lessonsData['1-' + i] = { vocab: [], grammar: [],
                     let cw = vocabArray.filter(v=>v.cn!==word.cn).slice(0,4).map(v=>`${v.cn} (${v.pinyin})`);
                     while(cw.length < 4) { const rf = fakeVocabMap[Math.floor(Math.random()*fakeVocabMap.length)]; const fs = `${rf.cn} (${rf.pinyin})`; if (!cw.includes(fs)) cw.push(fs); else cw.push('---'); }
                     const co = [`${word.cn} (${word.pinyin})`, ...cw].sort(() => Math.random() - 0.5);
-                    exs.push({type:'char-select',sentence:`___ significa "${word.es}".`,answer:word.cn,chars:co});
+                    exs.push({type:'char-select',sentence:`___ significa "<span class='es'>${word.es}</span>".`,answer:word.cn,chars:co});
                 });
                 if(vocabArray.length>=2) exs.push({type:'match',pairs:vocabArray.slice(0,5).map(v=>[`${v.cn} (${v.pinyin})`,v.es])});
                 window._starredPracticeExercises = exs.sort(()=>Math.random()-0.5);
@@ -1682,7 +1732,7 @@ for (let i = 25; i <= 24; i++) lessonsData['1-' + i] = { vocab: [], grammar: [],
                     const starred = starredVocab.has(vocabKey);
                     const detailEscaped = v.detail.replace(/"/g, '&quot;').replace(/'/g, "&#39;");
                     html += `<tr>
-                        <td class="cn">${v.cn}</td><td>${getSpacedPinyin(v.cn, v.pinyin)}</td><td>${v.es}</td>
+                        <td class="cn">${v.cn}</td><td class="pinyin-col"><span class="py">${getSpacedPinyin(v.cn, v.pinyin)}</span></td><td><span class="es">${v.es}</span></td>
                         <td><button class="btn audio-btn" onclick="window._speak('${v.audio}')">🔊</button></td>
                         <td><button class="star-btn ${starred?'active':''}" data-vocab-key='${vocabKey.replace(/'/g,"&#39;")}' onclick="window.toggleStar({cn:'${v.cn}',pinyin:'${v.pinyin}',es:'${v.es}',audio:'${v.audio}'}, this)">★</button></td>
                         <td><button class="info-btn" onclick="showInfoModal('${detailEscaped}')">ℹ️</button></td>
@@ -1708,12 +1758,12 @@ for (let i = 25; i <= 24; i++) lessonsData['1-' + i] = { vocab: [], grammar: [],
                 }
                 if (data.scenario && data.scenario.length) {
                     html += '<div class="section"><h2>💬 Diálogo</h2>';
-                    data.scenario.forEach(l => html += `<div class="dialogue-card"><span class="speaker">${l.speaker}</span><div><strong>${l.cn}</strong><br><small>${l.pinyin}</small><br>${l.es}</div><button class="btn audio-btn" onclick="window._speak('${l.cn}')">🔊</button></div>`);
+                    data.scenario.forEach(l => html += `<div class="dialogue-card"><span class="speaker">${l.speaker}</span><div><strong>${l.cn}</strong><br><small class="py">${l.pinyin}</small><br><span class="es">${l.es}</span></div><button class="btn audio-btn" onclick="window._speak('${l.cn}')">🔊</button></div>`);
                     html += '</div>';
                 }
                 if (data.phrases && data.phrases.length) {
                     html += '<div class="section"><h2>📚 Frases</h2>';
-                    data.phrases.forEach(p => html += `<div class="phrase-card"><div><strong>${p.cn}</strong><br><small>${p.pinyin}</small><br>${p.es}</div><button class="btn audio-btn" onclick="window._speak('${p.cn}')">🔊</button></div>`);
+                    data.phrases.forEach(p => html += `<div class="phrase-card"><div><strong>${p.cn}</strong><br><small class="py">${p.pinyin}</small><br><span class="es">${p.es}</span></div><button class="btn audio-btn" onclick="window._speak('${p.cn}')">🔊</button></div>`);
                     html += '</div>';
                 }
                 html += '<div class="section"><h2>✏️ Ejercicios</h2><button class="btn" style="margin-bottom:0.8rem;" onclick="resetExercises()">↻ Reiniciar todos</button>';
@@ -1782,24 +1832,24 @@ for (let i = 25; i <= 24; i++) lessonsData['1-' + i] = { vocab: [], grammar: [],
             window.selectMatch = function(el) { const idx = el.dataset.idx; if (!window._matchFound.has(idx)) window._matchFound.set(idx, new Set()); const found = window._matchFound.get(idx); if (el.classList.contains('matched')) return; if (el.dataset.side === 'cn') { document.querySelectorAll(`.match-cn[data-idx="${idx}"].selected`).forEach(e => e.classList.remove('selected')); el.classList.add('selected'); window._matchSelected = el; } else if (window._matchSelected && window._matchSelected.dataset.idx === idx) { const cn = window._matchSelected; if (cn.dataset.pair === el.dataset.pair && !found.has(el.dataset.pair)) { cn.classList.add('matched'); cn.classList.remove('selected'); el.classList.add('matched'); found.add(el.dataset.pair); window._matchSelected = null; if (found.size >= document.querySelectorAll(`.match-cn[data-idx="${idx}"]`).length) { const box = document.getElementById('exBox'+idx) || document.getElementById('pEx'+idx); if (box) box.insertAdjacentHTML('beforeend','<span class="result-badge good">✓ Completo</span>'); } } } };
             window._builderState = {};
             window.initBuilder = function(idx, words) { const items = words.map(w => ({ display: w, char: w.split(' (')[0] })); items.sort(() => Math.random() - 0.5); window._builderState[idx] = { items, constructed: [], originalWords: [...words] }; renderBuilder(idx); };
-            function renderBuilder(idx) { const st = window._builderState[idx]; const cDiv = document.getElementById('chips'+idx) || document.getElementById('examChips'+String(idx).replace('exam','')); const sDiv = document.getElementById('constructed'+idx) || document.getElementById('examConst'+String(idx).replace('exam','')); if (!cDiv || !sDiv) return; cDiv.innerHTML = ''; sDiv.innerHTML = ''; st.items.forEach((item, i) => { const sp = document.createElement('span'); sp.className = 'word-chip'; sp.textContent = item.display; sp.onclick = () => { st.constructed.push({ char: item.char, display: item.display }); st.items.splice(i, 1); renderBuilder(idx); }; cDiv.appendChild(sp); }); st.constructed.forEach((item, i) => { const sp = document.createElement('span'); sp.className = 'chip'; sp.textContent = item.display; sp.onclick = () => { st.items.push({ display: item.display, char: item.char }); st.constructed.splice(i, 1); renderBuilder(idx); }; sDiv.appendChild(sp); }); }
+            function renderBuilder(idx) { const st = window._builderState[idx]; const cDiv = document.getElementById('chips'+idx) || document.getElementById('examChips'+String(idx).replace('exam','')); const sDiv = document.getElementById('constructed'+idx) || document.getElementById('examConst'+String(idx).replace('exam','')); if (!cDiv || !sDiv) return; cDiv.innerHTML = ''; sDiv.innerHTML = ''; st.items.forEach((item, i) => { const sp = document.createElement('span'); sp.className = 'word-chip'; sp.innerHTML = item.display; sp.onclick = () => { st.constructed.push({ char: item.char, display: item.display }); st.items.splice(i, 1); renderBuilder(idx); }; cDiv.appendChild(sp); }); st.constructed.forEach((item, i) => { const sp = document.createElement('span'); sp.className = 'chip'; sp.innerHTML = item.display; sp.onclick = () => { st.items.push({ display: item.display, char: item.char }); st.constructed.splice(i, 1); renderBuilder(idx); }; sDiv.appendChild(sp); }); }
             window.resetBuilder = function(idx) { const st = window._builderState[idx]; if (st) { const words = st.originalWords || st.items.map(i => i.display); const items = words.map(w => ({ display: w, char: w.split(' (')[0] })).sort(() => Math.random() - 0.5); window._builderState[idx] = { items, constructed: [], originalWords: words }; renderBuilder(idx); } };
             window.checkBuilt = function(idx, correct) { const fb = document.getElementById('fb'+idx) || document.getElementById('examFb'+idx); const st = window._builderState[idx]; if (st && st.constructed.map(c => c.char).join('') === correct) { fb.textContent = '✓ Correcto'; fb.style.color = '#4a7a4a'; } else { fb.textContent = `✗ La frase es: ${correct}`; fb.style.color = '#b05050'; } };
 
             function generateFullExam(data) {
-                const qs = [];
-                data.vocab.forEach(v => { const wrongs = data.vocab.filter(x => x.cn !== v.cn).slice(0,4).map(x => x.es); while(wrongs.length < 4) wrongs.push('---'); const opts = [v.es, ...wrongs].sort(() => Math.random() - 0.5); qs.push({type:'choice', question:`¿Qué significa "${v.cn} (${v.pinyin})"?`, options:opts, correct:opts.indexOf(v.es)}); });
-                for(let i=0; i<4; i++) { 
-    const v = data.vocab[Math.floor(Math.random()*data.vocab.length)]; 
-    const wrongs = data.vocab.filter(x => x.cn !== v.cn).slice(0,4).map(x => `${x.cn} (${x.pinyin})`); 
-    const allOpts = [`${v.cn} (${v.pinyin})`, ...wrongs].sort(() => Math.random() - 0.5);
-    const correctIdx = allOpts.indexOf(`${v.cn} (${v.pinyin})`);
-    qs.push({type:'audio-word', audio:v.audio, options:allOpts, correct: correctIdx}); 
+    const qs = [];
+    data.vocab.forEach(v => { const wrongs = data.vocab.filter(x => x.cn !== v.cn).slice(0,4).map(x => x.es); while(wrongs.length < 4) wrongs.push('---'); const opts = [v.es, ...wrongs].sort(() => Math.random() - 0.5); qs.push({type:'choice', question:`¿Qué significa "${v.cn} (<span class='py'>${v.pinyin}</span>)"?`, options:opts, correct:opts.indexOf(v.es)}); });
+    for(let i=0; i<4; i++) { 
+        const v = data.vocab[Math.floor(Math.random()*data.vocab.length)]; 
+        const wrongs = data.vocab.filter(x => x.cn !== v.cn).slice(0,4).map(x => `${x.cn} (${x.pinyin})`); 
+        const allOpts = [`${v.cn} (<span class='py'>${v.pinyin}</span>)`, ...wrongs].sort(() => Math.random() - 0.5);
+        const correctIdx = allOpts.indexOf(`${v.cn} (<span class='py'>${v.pinyin}</span>)`);
+        qs.push({type:'audio-word', audio:v.audio, options:allOpts, correct: correctIdx}); 
+    }
+    if(data.vocab.length >= 4) qs.push({type:'match', pairs:data.vocab.slice(0,5).map(v=>[`${v.cn} (${v.pinyin})`,v.es])});
+    data.phrases.slice(0,4).forEach(p => { const clean = p.cn.replace(/[，。？！]/g,''); const chars = clean.split(''); const words = chars.map(c => { const v = data.vocab.find(x => x.cn === c); if (v) return `${c} (<span class='py'>${getSpacedPinyin(v.cn, v.pinyin)}</span>)`; if (pinyinMap[c]) return `${c} (<span class='py'>${pinyinMap[c]}</span>)`; return `${c} (?)`; }); qs.push({type:'sentence-builder', words, correct:clean, instruction:`Ordena: "<span class='es'>${p.es}</span>"`}); });
+    return qs.slice(0, 20);
 }
-                if(data.vocab.length >= 4) qs.push({type:'match', pairs:data.vocab.slice(0,5).map(v=>[`${v.cn} (${v.pinyin})`,v.es])});
-                data.phrases.slice(0,4).forEach(p => { const clean = p.cn.replace(/[，。？！]/g,''); const chars = clean.split(''); const words = chars.map(c => { const v = data.vocab.find(x => x.cn === c); return v ? `${c} (${v.pinyin})` : (pinyinMap[c] ? `${c} (${pinyinMap[c]})` : `${c} (?)`); }); qs.push({type:'sentence-builder', words, correct:clean, instruction:`Ordena: "${p.es}"`}); });
-                return qs.slice(0, 20);
-            }
             function renderFullExamView() {
                 const data = lessonsData[lessonKeys[currentLessonIndex]]; if (!data || !data.vocab.length) return;
                 const qs = generateFullExam(data); window._currentFullExam = qs;
@@ -1903,7 +1953,7 @@ window.renderStoryView = (storyId) => {
     let html = `<div class="section"><h2>📖 ${story.title}</h2><p><small>Lección ${story.lesson}</small></p>`;
     story.content.forEach((block, idx) => {
         if (block.type === 'text') {
-            html += `<div class="dialogue-card" style="border-left-color:var(--accent);"><div><strong>${block.cn}</strong><br><small>${block.pinyin}</small><br>${block.es}</div><button class="btn audio-btn" onclick="window._speak('${block.cn}')">🔊</button></div>`;
+            html += `<div class="dialogue-card" style="border-left-color:var(--accent);"><div><strong>${block.cn}</strong><br><small class="py">${block.pinyin}</small><br><span class="es">${block.es}</span></div><button class="btn audio-btn" onclick="window._speak('${block.cn}')">🔊</button></div>`;
         } else if (block.type === 'question') {
             html += `<div class="exercise-box"><p><strong>❓ Pregunta:</strong> ${block.text}</p><div>`;
             block.options.forEach((opt, i) => {
@@ -2018,8 +2068,8 @@ window.renderCreativeCombinations = (char) => {
     html += `
       <tr>
         <td class="cn">${comb.word}</td>
-        <td>${comb.pinyin}</td>
-        <td>${comb.meaning}</td>
+        <td class="py">${comb.pinyin}</td>
+        <td><span class="es">${comb.meaning}</span></td>
         <td>${comb.components}</td>
         <td><button class="btn audio-btn" onclick="window._speak('${comb.word}')">🔊</button></td>
         <td><button class="star-btn ${isStarred ? 'active' : ''}" data-vocab-key='${starKey}' onclick="window.toggleStar({cn:'${comb.word}',pinyin:'${comb.pinyin}',es:'${comb.meaning}',audio:'${comb.audio || comb.word}'}, this)">★</button></td>
@@ -2032,7 +2082,7 @@ window.renderCreativeCombinations = (char) => {
       </table>
       <div class="grammar-card" style="margin-top: 1.5rem;">
         <h3>📖 Mini historia</h3>
-        <div><strong>${story.cn}</strong><br><small>${story.pinyin}</small><br>${story.es}</div>
+        <div><strong>${story.cn}</strong><br><small class="py">${story.pinyin}</small><br><span class="es">${story.es}</span></div>
         <button class="btn audio-btn" style="margin-top:0.5rem;" onclick="window._speak('${story.cn}')">🔊 Escuchar historia</button>
       </div>
     </div>
@@ -2066,8 +2116,8 @@ window.renderThematicCombinations = (categoryId) => {
     html += `
       <tr>
         <td class="cn">${item.cn}</td>
-        <td>${item.pinyin}</td>
-        <td>${item.es}</td>
+        <td class="py">${item.pinyin}</td>
+        <td><span class="es">${item.es}</span></td>
         <td><button class="btn audio-btn" onclick="window._speak('${item.cn}')">🔊</button></td>
         <td><button class="star-btn ${isStarred ? 'active' : ''}" data-vocab-key='${starKey}' onclick="window.toggleStar({cn:'${item.cn}',pinyin:'${item.pinyin}',es:'${item.es}',audio:'${item.audio || item.cn}'}, this)">★</button></td>
         <td><button class="info-btn" onclick="showInfoModal('${escapedDetail}')">ℹ️</button></td>
@@ -2081,12 +2131,13 @@ window.renderThematicCombinations = (categoryId) => {
         <h3>📝 Frases de ejemplo</h3>
   `;
   data.phrases.forEach(phrase => {
-    html += `
-      <div class="phrase-card">
-        <div><strong>${phrase.cn}</strong><br><small>${phrase.pinyin}</small><br>${phrase.es}</div>
-        <button class="btn audio-btn" onclick="window._speak('${phrase.cn}')">🔊</button>
-      </div>
-    `;
+    const safePinyin = phrase.pinyin.replace(/'/g, "\\'");
+html += `
+  <div class="phrase-card">
+    <div><strong>${phrase.cn}</strong><br><small class="py">${safePinyin}</small<br><span class="es">${phrase.es}</span></div>
+    <button class="btn audio-btn" onclick="window._speak('${phrase.cn.replace(/'/g, "\\'")}')">🔊</button>
+  </div>
+`;
   });
   html += `
       </div>
